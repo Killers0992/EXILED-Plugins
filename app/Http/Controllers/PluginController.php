@@ -141,7 +141,6 @@ class PluginController extends Controller
 
         $file = new PluginFile();
         $file->plugin_id = $plugin->id;
-        $file->file_id = $newid;
         $file->type = $request->input('type');
         $file->file_name = $filename;
         $file->file_extension = $fileex;
@@ -151,7 +150,7 @@ class PluginController extends Controller
         $file->version = $request->input('version');
         $file->changelog = $request->input('changelog');
         $file->save();       
-        $uploadedFile->storeAs($plugin->id.'/download/'.$file->id, $filename.'.'.$fileex);
+        $uploadedFile->storeAs($plugin->id.'/download/'.$file->file_id, $filename.'.'.$fileex);
         $plugin->last_update = new DateTime();
         $plugin->latest_file_id = $file->file_id;
         $plugin->latest_exiled_version = $file->exiled_version;
@@ -333,8 +332,7 @@ class PluginController extends Controller
         $file->save();
         $plugin->downloads_count++;
         $plugin->save();
-
-        $fileName = '/var/www/plugins/storage/app/' . $id . '/download/'.$fileid.'/'.$file->file_name.'.'.$file->file_extension;
+        $fileName = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix(). $id . '/download/'.$fileid.'/'.$file->file_name.'.'.$file->file_extension;
         return response()->download($fileName);
     }
 
