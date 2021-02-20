@@ -8,6 +8,7 @@ use App\PluginFile;
 use DateTime;
 use App\Plugin;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class PluginController extends Controller
 {
@@ -30,10 +31,10 @@ class PluginController extends Controller
         $query = $request->input('query');
         if ($query != null)
         {
-            $plugins = Plugin::where('name', 'LIKE', '%'.$query.'%')->paginate(10);
-            $count = Plugin::where('name', 'LIKE', '%'.$query.'%')->count();
+            $plugins = Plugin::orderBy('downloads_count', 'DESC')->where('name', 'LIKE', '%'.$query.'%')->paginate(10);
+            $count = Plugin::orderBy('downloads_count', 'DESC')->where('name', 'LIKE', '%'.$query.'%')->count();
         }else{
-            $plugins = Plugin::paginate(10);
+            $plugins = Plugin::orderBy('downloads_count', 'DESC')->paginate(10);
             $count = Plugin::get()->count();
         }
         return view('home', compact('plugins', 'count'));
@@ -75,24 +76,17 @@ class PluginController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $plugins = Plugin::orderBy('id', 'ASC')->get();
-        $ids = array();
-        foreach($plugins as $pl)
-        {
-            array_push($ids, $pl->id);
-        }
-        $missing = array_diff(range(0,end($ids)+1),$ids);
-
-        $newid = array_key_first($missing);
         $plugin = new Plugin();
-        $plugin->id = $newid;
         $plugin->name = $request->input('pluginname');
         $plugin->owner_steamid = Auth::user()->steamid;
         $plugin->creation_date = new DateTime();
         $plugin->last_update = new DateTime();
         $plugin->save();
 
-        return redirect()->route('plugin.edit', ['id' => $newid]);
+        Storage::disk('local')->makeDirectory($plugin->id);
+        Storage::disk('local')->makeDirectory($plugin->id.'/download');
+
+        return redirect()->route('plugin.edit', ['id' => $plugin->id]);
     }
 
     public function editPlugin(Request $request, $id)
@@ -114,13 +108,6 @@ class PluginController extends Controller
         return view('viewplugin', compact('plugin'));
     }
 
-
-    public function missing_number($num_list)
-    {
-        $new_arr = range($num_list[0],max($num_list));                                                    
-        return array_diff($new_arr, $num_list);
-    }
-
     public function uploadFile(Request $request, $id)
     {
         $plugin = Plugin::where('id', '=', $id)->where('owner_steamid', '=', Auth::user()->steamid)->first();
@@ -132,14 +119,14 @@ class PluginController extends Controller
             'exiledversion'                  => 'required|max:50',
             'type' => 'required|max:1',
             'changelog' => 'required|max:2000',
-            'fileurl' => 'required|max:250',
+            'file' => 'required|max:25000',
             'version' => 'required|max:50'
         ],
         [
             'exiledversion.required'        => 'You must provide exiled version.',
             'type.required' => "FATAL ERROR",
             'changelog.required' => 'You must provide changelog.',
-            'fileurl.required' => 'You must provide file url.',
+            'file.required' => 'You must provide file.',
             'version.required' => 'You must provide version.'
         ]
         );
@@ -148,33 +135,28 @@ class PluginController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        $uploadedFile = $request->file;
+        $filename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+        $fileex = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_EXTENSION);
 
-        $files = PluginFile::where('plugin_id', '=', $plugin->id)->orderBy('file_id', 'ASC')->get();
-
-        $ids = array();
-        foreach($files as $pl)
-        {
-            array_push($ids, $pl->file_id);
-        }
-        $missing = array_diff(range(0,end($ids)+1),$ids);
-        $newid = array_key_first($missing);
-        $md5 = $this->get_remote_md5($request->input('fileurl'));
         $file = new PluginFile();
         $file->plugin_id = $plugin->id;
         $file->file_id = $newid;
         $file->type = $request->input('type');
-        $file->file_name = basename($request->input('fileurl'), ".dll");
-        $file->file_size = $md5["filesize"];
-        $file->file_url = $request->input('fileurl');
+        $file->file_name = $filename;
+        $file->file_extension = $fileex;
+        $file->file_size = $uploadedFile->getSize();
         $file->upload_time = new DateTime();
         $file->exiled_version = $request->input('exiledversion');
         $file->version = $request->input('version');
         $file->changelog = $request->input('changelog');
-        $file->save();
+        $file->save();       
+        $uploadedFile->storeAs($plugin->id.'/download/'.$file->id, $filename.'.'.$fileex);
         $plugin->last_update = new DateTime();
         $plugin->latest_file_id = $file->file_id;
         $plugin->latest_exiled_version = $file->exiled_version;
         $plugin->save();
+
         return back()->with('success',' File uploaded!');
     }
 
@@ -351,7 +333,9 @@ class PluginController extends Controller
         $file->save();
         $plugin->downloads_count++;
         $plugin->save();
-        return redirect($file->file_url);
+
+        $fileName = '/var/www/plugins/storage/app/' . $id . '/download/'.$fileid.'/'.$file->file_name.'.'.$file->file_extension;
+        return response()->download($fileName);
     }
 
     public function deleteFile(Request $request, $id)
@@ -373,25 +357,34 @@ class PluginController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $file = PluginFile::where('plugin_id', '=', $plugin->id)->where('file_id', '=', $request->input('fileid'))->first();
+        $file = PluginFile::find($request->input('fileid'));
         if (is_null($file)){
             return back()->with('error', 'Cant delete that file');
         }
+        
+        if ($file->plugin_id != $plugin->id)
+        {
+            return back()->with('error', 'That file is not owned by this plugin!');
+        }
+
         $plugin->last_update = new DateTime();
         $oldid = $file->file_id;
+        
         $file->delete();
 
         $fl = PluginFile::where('plugin_id', '=', $plugin->id)->orderBy('upload_time', 'DESC')->first();
         if ($plugin->latest_file_id == $oldid){
             if (is_null($fl)){
                 $plugin->latest_exiled_version = '2.1.29';
-                $plugin->latest_file_id = '';
+                $plugin->latest_file_id = -1;
             }else{
                 $plugin->latest_exiled_version = $fl->exiled_version;
                 $plugin->latest_file_id = $fl->file_id;
             }
         }
         $plugin->save();
+
+        Storage::deleteDirectory('/'.$plugin->id.'/download/'.$oldid);
         return back()->with('success', 'File removed!');
 
     }
@@ -403,6 +396,7 @@ class PluginController extends Controller
             return back()->with('error', 'Plugin not found.');
         }
         $files = PluginFile::where('plugin_id', '=', $plugin->id)->orderBy('upload_time', 'DESC')->paginate(5);
+        
         return view('viewpluginfiles', compact('plugin', 'files'));
     }
 

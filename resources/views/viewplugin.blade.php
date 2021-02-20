@@ -15,15 +15,11 @@
 
                   <div class="flex flex-col">
                     <div class="flex my-1">
-                        <span class="mr-2 text-xs text-gray-500">{{$plugin->downloads_count}}
-                            Downloads
-                        </span>
-                        <span class="mr-2 text-xs text-gray-500">Updated:
-                          <abbr>{{$plugin->last_update}}</abbr>
-                        </span>
-                        <span class="text-xs text-gray-500">Exiled Version:
-                            <abbr>{{$plugin->latest_exiled_version}}</abbr>
-                          </span>
+                        <code><span class="mr-2 text-xs text-gray-500">{{$plugin->downloads_count}} Downloads</span></code>
+                        <code><span class="mr-2 text-xs text-gray-500">Updated <abbr>{{$plugin->last_update}}</abbr></span></code>
+                        <code><span class="text-xs text-gray-500">Created <abbr>{{$plugin->creation_date}}</abbr></span></code>
+                        <code><span class="text-xs text-gray-500">Exiled Version: <abbr>{{$plugin->latest_exiled_version}}</abbr></span></code>
+                          
                           @if(is_null(Auth::user()) ? false : Auth::user()->steamid == $plugin->owner_steamid)
                             <form method="get" action="{{route('plugin.edit', ['id' => $plugin->id])}}">
                                 <button type="submit" class="btn btn-block btn-primary bg-purple btn-xs" style="width: 150px; float: right;">Edit</button>

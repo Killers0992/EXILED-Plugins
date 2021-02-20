@@ -40,9 +40,11 @@
                                 <select class="form-control" name="category" id="category">
                                     <option <?php echo e($plugin->category == 0 ? 'selected' : ''); ?> value="0">None</option>
                                     <option <?php echo e($plugin->category == 1 ? 'selected' : ''); ?> value="1">Features</option>
-                                    <option <?php echo e($plugin->category == 2 ? 'selected' : ''); ?> value="2">Reworks</option>
-                                    <option <?php echo e($plugin->category == 3 ? 'selected' : ''); ?> value="3">SCPs</option>
-                                    <option <?php echo e($plugin->category == 4 ? 'selected' : ''); ?> value="4">External</option>
+                                    <option <?php echo e($plugin->category == 2 ? 'selected' : ''); ?> value="2">Utility</option>
+                                    <option <?php echo e($plugin->category == 3 ? 'selected' : ''); ?> value="3">Customization</option>
+                                    <option <?php echo e($plugin->category == 4 ? 'selected' : ''); ?> value="4">Reworks</option>
+                                    <option <?php echo e($plugin->category == 4 ? 'selected' : ''); ?> value="5">SCPs</option>
+                                    <option <?php echo e($plugin->category == 4 ? 'selected' : ''); ?> value="6">Dev Tool</option>
                                 </select>
                             </div>
                             <div class="form-group">

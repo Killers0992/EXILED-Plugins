@@ -57,16 +57,9 @@
 
                                       <div class="flex flex-col">
                                         <div class="flex my-1">
-                                            <span class="mr-2 text-xs text-gray-500"><?php echo e($plugin->downloads_count); ?>
-
-                                                Downloads
-                                            </span>
-                                            <span class="mr-2 text-xs text-gray-500">Updated
-                                              <abbr><?php echo e($plugin->last_update); ?></abbr>
-                                            </span>
-                                            <span class="text-xs text-gray-500">Created 
-                                              <abbr><?php echo e($plugin->creation_date); ?></abbr>
-                                            </span>
+                                            <code><span class="mr-2 text-xs text-gray-500"><?php echo e($plugin->downloads_count); ?> Downloads</span></code>
+                                            <code><span class="mr-2 text-xs text-gray-500">Updated <abbr><?php echo e($plugin->last_update); ?></abbr></span></code>
+                                            <code><span class="text-xs text-gray-500">Created <abbr><?php echo e($plugin->creation_date); ?></abbr></span></code>
                                         </div>
                                         <p class="text-sm leading-snug">
                                           <?php echo e($plugin->small_description); ?>

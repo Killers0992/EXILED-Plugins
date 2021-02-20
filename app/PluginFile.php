@@ -3,28 +3,22 @@
 namespace App;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Project;
 
-class PluginFile extends Authenticatable
-{
-    use Notifiable;
-    
-    public function __construct()
-    {
-        parent::__construct();
-        $this->setTable("exiled_plugins.plugins_files");
-    }
+class PluginFile extends Model
+{    
+
+    protected $table = "exiled_plugins.plugins_files";
 
     protected $fillable = [
         'plugin_id',
         'file_id',
         'type',
         'file_name',
+        'file_extension',
         'file_size',
-        'file_url',
         'upload_time',
         'exiled_version',
         'version',
@@ -62,7 +56,8 @@ class PluginFile extends Authenticatable
 		return number_format($size)." bytes";
 	}
 
+
+    protected $primaryKey = 'file_id';
     public $timestamps = false;
-    protected $primaryKey = 'plugin_id';
 }
  

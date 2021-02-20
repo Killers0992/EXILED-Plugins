@@ -3,20 +3,12 @@
 namespace App;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 use Te7aHoudini\LaravelTrix\Traits\HasTrixRichText;
 
-class Plugin extends Authenticatable
+class Plugin extends Model
 {
-    use Notifiable;
-    protected $guarded = [];
-    public function __construct()
-    {
-        parent::__construct();
-        $this->setTable("exiled_plugins.plugins");
-    }
+    protected $table = "exiled_plugins.plugins";
 
     protected $fillable = [
         'id',
@@ -45,11 +37,15 @@ class Plugin extends Authenticatable
             case 1:
                 return '<abbr title="Features"><span class="badge bg-maroon">Features</span></abbr>';
             case 2:
-                return '<abbr title="Reworks"><span class="badge bg-teal">Reworks</span></abbr>';
+                return '<abbr title="Utility"><span class="badge bg-teal">Utility</span></abbr>';
             case 3:
-                return '<abbr title="SCPs"><span class="badge bg-danger">SCPs</span></abbr>';
+                return '<abbr title="Customization"><span class="badge bg-danger">Customization</span></abbr>';
             case 4:
-                return '<abbr title="External"><span class="badge bg-info">External</span></abbr>';
+                return '<abbr title="Reworks"><span class="badge bg-info">Reworks</span></abbr>';
+            case 5:
+                return '<abbr title="SCPs"><span class="badge bg-info">SCPs</span></abbr>';
+            case 6:
+                return '<abbr title="Dev Tools"><span class="badge bg-info">Dev Tools</span></abbr>';
             case 0:
             default:
                 return '<abbr title="None"><span class="badge bg-gray">None</span></abbr>';

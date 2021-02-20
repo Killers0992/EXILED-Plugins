@@ -40,9 +40,11 @@
                                 <select class="form-control" name="category" id="category">
                                     <option {{ $plugin->category == 0 ? 'selected' : ''}} value="0">None</option>
                                     <option {{ $plugin->category == 1 ? 'selected' : ''}} value="1">Features</option>
-                                    <option {{ $plugin->category == 2 ? 'selected' : ''}} value="2">Reworks</option>
-                                    <option {{ $plugin->category == 3 ? 'selected' : ''}} value="3">SCPs</option>
-                                    <option {{ $plugin->category == 4 ? 'selected' : ''}} value="4">External</option>
+                                    <option {{ $plugin->category == 2 ? 'selected' : ''}} value="2">Utility</option>
+                                    <option {{ $plugin->category == 3 ? 'selected' : ''}} value="3">Customization</option>
+                                    <option {{ $plugin->category == 4 ? 'selected' : ''}} value="4">Reworks</option>
+                                    <option {{ $plugin->category == 4 ? 'selected' : ''}} value="5">SCPs</option>
+                                    <option {{ $plugin->category == 4 ? 'selected' : ''}} value="6">Dev Tool</option>
                                 </select>
                             </div>
                             <div class="form-group">

@@ -56,21 +56,15 @@
 
                                       <div class="flex flex-col">
                                         <div class="flex my-1">
-                                            <span class="mr-2 text-xs text-gray-500">{{$plugin->downloads_count}}
-                                                Downloads
-                                            </span>
-                                            <span class="mr-2 text-xs text-gray-500">Updated
-                                              <abbr>{{$plugin->last_update}}</abbr>
-                                            </span>
-                                            <span class="text-xs text-gray-500">Created 
-                                              <abbr>{{$plugin->creation_date}}</abbr>
-                                            </span>
+                                          <code><span class="mr-2 text-xs text-gray-500">{{$plugin->downloads_count}} Downloads</span></code>
+                                          <code><span class="mr-2 text-xs text-gray-500">Updated <abbr>{{$plugin->last_update}}</abbr></span></code>
+                                          <code><span class="text-xs text-gray-500">Created <abbr>{{$plugin->creation_date}}</abbr></span></code>
                                         </div>
                                         <p class="text-sm leading-snug">
                                           {{$plugin->small_description}}
                                         </p>
                                         {!!$plugin->categorynice!!}
-                                        @if(!empty($plugin->latest_file_id))
+                                        @if($plugin->latest_file_id != -1)
                                         <form method="get" action="{{route('plugin.download.file', ['id' => $plugin->id, 'fileid' => $plugin->latest_file_id])}}">
                                           <button type="submit" class="btn btn-block btn-primary bg-purple btn-xs" style="width: 150px; float: right;">Download</button>
                                         </form>
