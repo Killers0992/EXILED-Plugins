@@ -23,7 +23,8 @@ class User extends Authenticatable
 
 
     protected $hidden = [
-        'remember_token'
+        'remember_token',
+        'profile_url'
     ];
 
     public $timestamps = false;

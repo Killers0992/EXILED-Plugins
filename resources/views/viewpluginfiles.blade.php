@@ -105,6 +105,38 @@
                                             </button>
                                         </form>
                                         @endif
+                                        <a type="button" data-toggle="modal" data-target="#modal-{{$file->file_id}}">
+                                            <abbr title="View"><i class="text-success fas fa-cube"></i></abbr>
+                                        </a>
+                                        <div class="modal fade" id="modal-{{$file->file_id}}" style="display: none;">
+                                            <div class="modal-dialog">
+                                              <div class="modal-content">
+                                                <div class="modal-header">
+                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span></button>
+                                                  <h4 class="modal-title">Changelog</h4>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                  <p>{{$file->changelog}}</p>
+                                                </div>
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                      <span aria-hidden="true">×</span></button>
+                                                    <h4 class="modal-title">Dependencies</h4>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                    @foreach($file->dependencies as $dependency)
+                                                    <p>{{$dependency->file->project->name}}</p>
+                                                    @endforeach
+                                                  </div>
+                                                <div class="modal-footer">
+                                                  <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                                                </div>
+                                              </div>
+                                              <!-- /.modal-content -->
+                                            </div>
+                                            <!-- /.modal-dialog -->
+                                        </div>
                                         <a type="submit" href="{{ route('plugin.download.file', ['id' => $plugin->id, 'fileid' => $file->file_id]) }}">
                                             <abbr title="Download"><i class="text-success fas fa-download"></i></abbr>
                                         </a>
@@ -162,7 +194,10 @@
                             <input type="file" class="form-control" id="file" name="file">
                         </div>
 
-                          
+                        <div class="form-group">
+                            <label for="dep">Dependencies</label>
+                            <select class="form-control" style="padding-left:0;" name="depedencies[]" id="dep"></select>
+                      </div>
                        </div>
                        <!-- /.box-body -->
          
@@ -191,5 +226,53 @@
 @section('adminlte_js')
 
 <script>
+
+$(document).ready(function () {
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    }
+
+    $('#dep').select2().select2({
+        ajax: {
+            url: "{{route('plugins.json')}}",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term, // search term
+                    page: params.page,
+                };
+            },
+            processResults: function (data, params) {
+                return { results: data };
+            },
+            cache: true,
+        },
+        escapeMarkup: function (markup) { return markup; },
+        minimumInputLength: 2,
+        multiple: true,
+        templateResult: function (data) {
+            if (data.loading) return '<span class="text-white">' + escapeHtml(data.text) + '</span>';
+
+            return '<img class="img-fluid img-circle img-size-32" src="' + escapeHtml(data.image) + '" alt="Plugin Image"> \
+                <span class="text-white" style="padding-left:5px;"> \
+                    ' + escapeHtml(data.name) + ' (<strong>' + escapeHtml(data.version) + '</strong>) \
+                </span> \
+                ';
+        },
+        templateSelection: function (data) {
+            return '<div style="padding-right:10px;"> \
+                <span> \
+                    <img class="img-fluid img-circle img-size-32" src="' + escapeHtml(data.image) + '" style="height:28px;margin-top:4px;" alt="Plugin Image"> \
+                </span> \
+                <span class="text-white" style="padding-left:5px;"> \
+                    ' + escapeHtml(data.name) + ' (<strong>' + escapeHtml(data.version) + '</strong>) \
+                </span> \
+            </div>';
+        }
+    });
+});
 </script>
 @stop

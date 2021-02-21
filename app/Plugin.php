@@ -9,6 +9,7 @@ use Te7aHoudini\LaravelTrix\Traits\HasTrixRichText;
 class Plugin extends Model
 {
     protected $table = "exiled_plugins.plugins";
+    protected $guarded = [];
 
     protected $fillable = [
         'id',
@@ -58,6 +59,16 @@ class Plugin extends Model
         return $this->belongsTo(User::class, 'owner_steamid', 'steamid');
     }
 
+    public function files()
+    {
+        return $this->hasMany(PluginFile::class);
+    }
+    
+    protected $hidden = [
+        'owner_steamid'
+    ];
+    
+    protected $with = ['user', 'files'];
     public $timestamps = false;
     protected $primaryKey = 'id';
 }

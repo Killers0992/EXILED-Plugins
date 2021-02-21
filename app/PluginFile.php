@@ -11,6 +11,7 @@ class PluginFile extends Model
 {    
 
     protected $table = "exiled_plugins.plugins_files";
+    protected $guarded = [];
 
     protected $fillable = [
         'plugin_id',
@@ -23,13 +24,17 @@ class PluginFile extends Model
         'exiled_version',
         'version',
         'downloads_count',
-        'changelog',
-        'dependency_plugins'
+        'changelog'
     ];
 
-    public function project()
+    public function plugin()
     {
-        return $this->belongsTo(Project::class, 'plugin_id', 'id');
+        return $this->belongsTo(Plugin::class, 'plugin_id', 'id');
+    }
+
+    public function dependencies()
+    {
+        return $this->hasMany(PluginDependency::class);
     }
     
     public function getTypeNiceAttribute() {
@@ -55,7 +60,6 @@ class PluginFile extends Model
 			return number_format($size/(1<<10),2)." KB";
 		return number_format($size)." bytes";
 	}
-
 
     protected $primaryKey = 'file_id';
     public $timestamps = false;
