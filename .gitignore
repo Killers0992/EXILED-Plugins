@@ -4,6 +4,7 @@
 /storage/*.key
 /storage/*.log
 /storage/*.php
+/storage/app/*
 /vendor
 .env
 .env.backup
