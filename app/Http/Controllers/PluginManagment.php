@@ -127,9 +127,6 @@ class PluginManagment extends Controller
             return back()->with('error', 'Cant find that file');
         }
         $fileName = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix(). $id . '/download/'.$fileid.'/'.$file->file_name.'.'.$file->file_extension;
-        if (!Storage::exists($fileName)){
-            return back()->with('error', 'Cant find that file');
-        }
         $file->downloads_count++;
         $file->save();
         $plugin->downloads_count++;

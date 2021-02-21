@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'storage_disk' => env('LARAVEL_TRIX_STORAGE_DISK', 'public'),
+    'storage_disk' => env('LARAVEL_TRIX_STORAGE_DISK', 'local'),
 
     'store_attachment_action' => Te7aHoudini\LaravelTrix\Http\Controllers\TrixAttachmentController::class.'@store',
 
