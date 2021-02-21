@@ -22,7 +22,7 @@ class CreatePluginsFilesTable extends Migration
             $table->string('file_extension', 50)->default('dll');
             $table->bigInteger('file_size')->default(0);
             $table->dateTime('upload_time')->nullable();
-            $table->string('exiled_version', 10)->default('2.1.29');
+            $table->string('exiled_version', 10)->default('');
             $table->string('version', 10)->default('1.0.0');
             $table->bigInteger('downloads_count')->default(0);
             $table->string('changelog', 1000)->default('No changelog');

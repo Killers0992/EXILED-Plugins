@@ -24,7 +24,7 @@ class CreatePluginsTable extends Migration
             $table->string('issues_url', 250)->default('');
             $table->string('source_url', 250)->default('');
             $table->bigInteger('latest_file_id')->default(-1);
-            $table->string('latest_exiled_version', 10)->default('2.1.29');
+            $table->string('latest_exiled_version', 10)->default('');
             $table->string('latest_version', 10)->default('1.0.0');
             $table->dateTime('last_update')->nullable();
             $table->dateTime('creation_date')->nullable();
