@@ -14,6 +14,7 @@ class CreateCacheTable extends Migration
     public function up()
     {
         Schema::create('cache', function ($table) {
+            $table->collation = 'utf8mb4_unicode_ci';
             $table->string('key')->unique();
             $table->text('value');
             $table->integer('expiration');

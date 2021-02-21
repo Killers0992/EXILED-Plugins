@@ -14,6 +14,7 @@ class CreatePluginsTable extends Migration
     public function up()
     {
         Schema::create('plugins', function (Blueprint $table) {
+            $table->collation = 'utf8mb4_unicode_ci';
             $table->id();
             $table->string('image_url', 150)->default('https://github.com/galaxy119/EXILED/raw/master/assets/Exiled_Icon.jpg');
             $table->string('name', 50)->default('Example Plugin');

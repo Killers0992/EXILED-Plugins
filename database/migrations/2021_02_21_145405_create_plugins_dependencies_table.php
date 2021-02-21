@@ -14,6 +14,7 @@ class CreatePluginsDependenciesTable extends Migration
     public function up()
     {
         Schema::create('plugins_dependencies', function (Blueprint $table) {
+            $table->collation = 'utf8mb4_unicode_ci';
             $table->id('file_id');
             $table->bigInteger('target_file_id')->default(0);
         });
