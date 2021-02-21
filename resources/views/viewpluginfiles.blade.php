@@ -114,7 +114,7 @@
                                                 <div class="modal-header">
                                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">×</span></button>
-                                                  <h4 class="modal-title">Changelog</h4>
+                                                  <h4 class="modal-title">Changelog for file {{$file->file_name}} - {{$file->version}}</h4>
                                                 </div>
                                                 <div class="modal-body text-center">
                                                   <p>{{$file->changelog}}</p>
@@ -125,9 +125,7 @@
                                                     <h4 class="modal-title">Dependencies</h4>
                                                   </div>
                                                   <div class="modal-body">
-                                                    @foreach($file->dependencies as $dependency)
-                                                    <p>{{$dependency->file->project->name}}</p>
-                                                    @endforeach
+                                                    <p>Not done</p>
                                                   </div>
                                                 <div class="modal-footer">
                                                   <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
