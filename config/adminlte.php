@@ -253,6 +253,22 @@ return [
             'icon' => 'fas fa-fw fa-database',
             'access_level' => array('none'),
         ],
+        [
+            'header' => 'Admin Stuff',
+            'access_level' => array('none'),
+        ],
+        [
+            'text' => 'Users',
+            'url'  => '/users',
+            'icon' => 'fas fa-fw fa-database',
+            'access_level' => array('none'),
+        ],
+        [
+            'text' => 'Groups',
+            'url'  => '/groups',
+            'icon' => 'fas fa-fw fa-database',
+            'access_level' => array('none'),
+        ],
     ],
 
     /*

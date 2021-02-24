@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->collation = 'utf8mb4_unicode_ci';
             $table->string('steamid', 18)->default('');
             $table->string('nickname', 50)->default('');
+            $table->bigInteger('group')->default(0);
             $table->string('profile_url', 250)->default('');
             $table->rememberToken();
         });

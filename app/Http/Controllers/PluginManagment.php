@@ -39,6 +39,11 @@ class PluginManagment extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        if (Auth::user()->groupe->allperms == 0 && Auth::user()->groupe->create_plugin == 0)
+        {
+            return back()->with('error', 'No permissions.');
+        }
+
         $plugin = new Plugin();
         $plugin->name = $request->input('pluginname');
         $plugin->owner_steamid = Auth::user()->steamid;
@@ -253,6 +258,11 @@ class PluginManagment extends Controller
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
+        }
+
+        if (Auth::user()->groupe->allperms == 0 && Auth::user()->groupe->edit_plugin == 0 && Auth::user()->groupe->edit_plugin_admin == 0)
+        {
+            return back()->with('error', 'No permissions.');
         }
 
         $plugin = Plugin::where('id', '=', $request->input('pluginid'))->where('owner_steamid', '=', Auth::user()->steamid)->first();

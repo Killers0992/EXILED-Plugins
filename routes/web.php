@@ -35,3 +35,7 @@ Route::post('logout', 'AuthController@logout')->name('logout');
 
 #Api
 Route::get('api/plugins', 'PluginAPI@plugins')->name('api.plugins');
+
+#Admin stuff
+Route::get('groups', 'PluginController@groups')->name('groups')->middleware('auth');
+Route::get('users', 'PluginController@users')->name('users')->middleware('auth');

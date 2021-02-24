@@ -18,14 +18,19 @@ class User extends Authenticatable
     }
 
     protected $fillable = [
-        'steamid', 'nickname', 'profile_url'
+        'steamid', 'nickname', 'group', 'profile_url'
     ];
 
 
     protected $hidden = [
         'remember_token',
         'profile_url'
-    ];
+    ];    
+    
+    public function groupe()
+    {
+        return $this->belongsTo(Group::class, 'group', 'id');
+    }
 
     public $timestamps = false;
     protected $primaryKey = 'steamid';

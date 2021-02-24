@@ -93,9 +93,11 @@ class AuthController extends Controller
         $user->steamid = $steamid;
         $user->nickname = $info->personaname;
         $user->profile_url = $info->avatarfull;
+        $user->group = 0;
         $user->save();
-
-        return $user;
+        
+        $userd = User::where('steamid', $steamid)->first();
+        return $userd;
     }
 
     public function getAvatarUrl($steamid){

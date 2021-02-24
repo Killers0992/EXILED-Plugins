@@ -7,6 +7,8 @@ use Auth;
 use App\PluginFile;
 use DateTime;
 use App\Plugin;
+use App\User;
+use App\Group;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -35,6 +37,34 @@ class PluginController extends Controller
             }
         }
         return response()->json($arr, 200);
+    }
+
+    public function users(Request $request)
+    {
+        $query = $request->input('query');
+        if ($query != null)
+        {
+            $users = User::where('nickname', 'LIKE', '%'.$query.'%')->paginate(10);
+            $count = User::where('nickname', 'LIKE', '%'.$query.'%')->count();
+        }else{
+            $users = User::paginate(10);
+            $count = User::count();
+        }
+        return view('users', compact('users', 'count'));
+    }
+
+    public function groups(Request $request)
+    {
+        $query = $request->input('query');
+        if ($query != null)
+        {
+            $groups = Group::where('group_name', 'LIKE', '%'.$query.'%')->paginate(10);
+            $count = Group::where('group_name', 'LIKE', '%'.$query.'%')->count();
+        }else{
+            $groups = Group::paginate(10);
+            $count = Group::count();
+        }
+        return view('groups', compact('groups', 'count'));
     }
 
     public function pluginList(Request $request)
@@ -67,11 +97,20 @@ class PluginController extends Controller
 
     public function addPlugin(Request $request)
     {
+        if (Auth::user()->groupe->allperms == 0 && Auth::user()->groupe->create_plugin == 0)
+        {
+            return back()->with('error', 'No permissions.');
+        }
         return view('addplugin');
     }
 
     public function editPlugin(Request $request, $id)
     {
+        if (Auth::user()->groupe->allperms == 0 && Auth::user()->groupe->edit_plugin == 0 && Auth::user()->groupe->edit_plugin_admin == 0)
+        {
+            return back()->with('error', 'No permissions.');
+        }
+
         $plugin = Plugin::where('id', '=', $id)->where('owner_steamid', '=', Auth::user()->steamid)->first();
         if (is_null($plugin)){
             return redirect()->route('home');
