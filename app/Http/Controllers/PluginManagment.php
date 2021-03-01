@@ -202,7 +202,7 @@ class PluginManagment extends Controller
 
     public function deleteFile(Request $request, $id)
     {
-        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->delete_file == 0 && Auth::user()->groupe->delete_file_admin == 0)
+        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->upload_file == 0 && Auth::user()->groupe->upload_file_admin == 0)
         {
             return back()->with('error', 'No permissions.');
         }
