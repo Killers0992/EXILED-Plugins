@@ -88,14 +88,13 @@ class PluginManagment extends Controller
         [
             'exiledversion'                  => 'required|max:50',
             'type' => 'required|max:1',
-            'changelog' => 'required|max:2000',
+            'changelog' => 'max:2000',
             'file' => 'required|max:25000',
             'version' => 'required|max:50'
         ],
         [
             'exiledversion.required'        => 'You must provide exiled version.',
             'type.required' => "FATAL ERROR",
-            'changelog.required' => 'You must provide changelog.',
             'file.required' => 'You must provide file.',
             'version.required' => 'You must provide version.'
         ]
@@ -120,7 +119,7 @@ class PluginManagment extends Controller
         $file->upload_time = new DateTime();
         $file->exiled_version = $request->input('exiledversion');
         $file->version = $request->input('version');
-        $file->changelog = $request->input('changelog');
+        $file->changelog = $request->input('changelog') ?? '';
         $file->save();
         if (!is_null($request->input('depedencies')))
         {
