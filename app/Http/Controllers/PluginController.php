@@ -9,6 +9,7 @@ use DateTime;
 use App\Plugin;
 use App\User;
 use App\Group;
+use App\PluginGroup;
 use App\PluginMember;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -31,8 +32,9 @@ class PluginController extends Controller
             return back()->with('error', 'Plugin not found.');
         }
         $members = PluginMember::where('plugin_id', '=', $plugin->id)->paginate(5);
-        
-        return view('viewpluginmembers', compact('plugin', 'members'));
+        $groups = PluginGroup::all();
+
+        return view('viewpluginmembers', compact('plugin', 'members', 'groups'));
     }
 
     public function jsonplugins(Request $request)
@@ -120,7 +122,7 @@ class PluginController extends Controller
 
     public function addPlugin(Request $request)
     {
-        if (Auth::user()->groupe->allperms == 0 && Auth::user()->groupe->create_plugin == 0)
+        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->create_plugin == 0)
         {
             return back()->with('error', 'No permissions.');
         }
@@ -129,12 +131,12 @@ class PluginController extends Controller
 
     public function editPlugin(Request $request, $id)
     {
-        if (Auth::user()->groupe->allperms == 0 && Auth::user()->groupe->edit_plugin == 0 && Auth::user()->groupe->edit_plugin_admin == 0)
+        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->edit_plugin == 0 && Auth::user()->groupe->edit_plugin_admin == 0)
         {
             return back()->with('error', 'No permissions.');
         }
 
-        if (Auth::user()->groupe->edit_plugin_admin == 1 || Auth::user()->groupe->allperms == 1)
+        if (Auth::user()->groupe->edit_plugin_admin == 1 || Auth::user()->groupe->all_perms == 1)
         {
             $plugin = Plugin::where('id', '=', $id)->first();
         }

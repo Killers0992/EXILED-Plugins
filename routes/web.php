@@ -29,6 +29,7 @@ Route::get('plugin/{id}/download/{fileid}', 'PluginManagment@downloadFile')->nam
 Route::post('plugin/{id}/files/upload', 'PluginManagment@uploadFile')->name('plugin.upload.file')->middleware('auth');
 Route::post('plugin/{id}/files/delete', 'PluginManagment@deleteFile')->name('plugin.delete.file')->middleware('auth');
 Route::get('plugin/{id}/members', 'PluginController@pluginmembers')->name('plugin.view.members');
+Route::post('plugin/{id}/members/add', 'PluginManagment@addMember')->name('plugin.members.add')->middleware('auth');
 
 #Auth
 Route::get('auth/steam', 'AuthController@redirectToSteam')->name('auth.steam');

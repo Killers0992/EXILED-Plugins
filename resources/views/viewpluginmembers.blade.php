@@ -107,13 +107,22 @@
             <div class="card">
                 <div class="card-body">
                     Add member
-                    <form role="form" enctype="multipart/form-data" action="{{ route('plugin.upload.file', ['id' => $plugin->id]) }}" method="post">
+                    <form role="form" enctype="multipart/form-data" action="{{ route('plugin.members.add', ['id' => $plugin->id]) }}" method="post">
                         @csrf
                         <div class="box-body">
                             <div class="form-group">
                                 <label for="user">User</label>
                                 <select class="form-control" style="padding-left:0;" name="user" id="user"></select>
                             </div>
+
+                            <div class="form-group">
+                                <label for="group">Group</label>
+                                <select class="form-control" name="group" id="group">
+                                    @foreach($groups as $group)
+                                    <option value="{{$group->id}}">{{$group->group_name}}</option>
+                                    @endforeach
+                                  </select>
+                             </div>
                        </div>
                        <!-- /.box-body -->
          

@@ -9,6 +9,7 @@ use App\PluginDependency;
 use DateTime;
 use App\PluginMember;
 use App\Plugin;
+use App\PluginGroup;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,7 +26,7 @@ class PluginManagment extends Controller
 
     public function createPlugin(Request $request)
     {
-        if (Auth::user()->groupe->allperms == 0 && Auth::user()->groupe->create_plugin == 0)
+        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->create_plugin == 0)
         {
             return back()->with('error', 'No permissions.');
         }
@@ -66,12 +67,12 @@ class PluginManagment extends Controller
 
     public function uploadFile(Request $request, $id)
     {
-        if (Auth::user()->groupe->allperms == 0 && Auth::user()->groupe->upload_file == 0 && Auth::user()->groupe->upload_file_admin == 0)
+        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->upload_file == 0 && Auth::user()->groupe->upload_file_admin == 0)
         {
             return back()->with('error', 'No permissions.');
         }
 
-        if (Auth::user()->groupe->upload_file_admin == 1 || Auth::user()->groupe->allperms == 1)
+        if (Auth::user()->groupe->upload_file_admin == 1 || Auth::user()->groupe->all_perms == 1)
         {
             $plugin = Plugin::where('id', '=', $id)->where('owner_steamid', '=', Auth::user()->steamid)->first();
         }
@@ -141,6 +142,46 @@ class PluginManagment extends Controller
         return back()->with('success',' File uploaded!');
     }
 
+    public function addMember(Request $request, $id)
+    {
+        if (Auth::user()->groupe->all_perms == 0)
+        {
+            return back()->with('error', 'No permissions.');
+        }
+
+        $plugin = Plugin::where('id', '=', $id)->where('owner_steamid', '=', Auth::user()->steamid)->first();
+
+        if (is_null($plugin)){
+            return back()->with('error', 'Plugin not found!');
+        }
+        $validator = Validator::make($request->all(),
+        [
+            'group'                  => 'required',
+            'user' => 'required'
+        ],
+        [
+            'group.required'        => 'You must provide group.',
+            'user.required' => 'You must provide user.'
+        ]
+        );
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $user = PluginGroup::where('steamid', '=', $request->input('user'));
+        if (is_null($user)){
+            return back()->with('error', 'User not found!');
+        }
+
+        $group = PluginGroup::where('id', '=', $request->input('group'));
+        if (is_null($group)){
+            return back()->with('error', 'Group not found!');
+        }
+
+        return back()->with('success',' User added!');
+    }
+
     public function downloadFile(Request $request, $id, $fileid)
     {
         $plugin = Plugin::where('id', '=', $id)->first();
@@ -161,12 +202,12 @@ class PluginManagment extends Controller
 
     public function deleteFile(Request $request, $id)
     {
-        if (Auth::user()->groupe->allperms == 0 && Auth::user()->groupe->delete_file == 0 && Auth::user()->groupe->delete_file_admin == 0)
+        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->delete_file == 0 && Auth::user()->groupe->delete_file_admin == 0)
         {
             return back()->with('error', 'No permissions.');
         }
 
-        if (Auth::user()->groupe->delete_file_admin == 1 || Auth::user()->groupe->allperms == 1)
+        if (Auth::user()->groupe->delete_file_admin == 1 || Auth::user()->groupe->all_perms == 1)
         {
             $plugin = Plugin::where('id', '=', $id)->first();
         }
@@ -232,7 +273,7 @@ class PluginManagment extends Controller
 
     public function deletePlugin(Request $request)
     {        
-        if (Auth::user()->groupe->allperms == 0 && Auth::user()->groupe->delete_plugin == 0 && Auth::user()->groupe->delete_plugin_admin == 0)
+        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->delete_plugin == 0 && Auth::user()->groupe->delete_plugin_admin == 0)
         {
             return back()->with('error', 'No permissions.');
         }
@@ -252,7 +293,7 @@ class PluginManagment extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        if (Auth::user()->groupe->delete_plugin_admin == 1 || Auth::user()->groupe->allperms == 1)
+        if (Auth::user()->groupe->delete_plugin_admin == 1 || Auth::user()->groupe->all_perms == 1)
         {
             $plugin = Plugin::where('id', '=', $request->input('pluginid'))->first();
         }
@@ -293,7 +334,7 @@ class PluginManagment extends Controller
 
     public function editChangesPlugin(Request $request)
     {
-        if (Auth::user()->groupe->allperms == 0 && Auth::user()->groupe->edit_plugin == 0 && Auth::user()->groupe->edit_plugin_admin == 0)
+        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->edit_plugin == 0 && Auth::user()->groupe->edit_plugin_admin == 0)
         {
             return back()->with('error', 'No permissions.');
         }
@@ -321,7 +362,7 @@ class PluginManagment extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        if (Auth::user()->groupe->edit_plugin_admin == 1 || Auth::user()->groupe->allperms == 1)
+        if (Auth::user()->groupe->edit_plugin_admin == 1 || Auth::user()->groupe->all_perms == 1)
         {
             $plugin = Plugin::where('id', '=', $request->input('pluginid'))->first();
         }
