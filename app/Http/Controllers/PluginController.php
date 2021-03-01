@@ -75,6 +75,10 @@ class PluginController extends Controller
             $users = User::orderBy('group', 'DESC')->paginate(10);
             $count = User::count();
         }
+        if (Auth::user()->groupe->all_perms == 0)
+        {
+            return back()->with('error', 'No permissions.');
+        }
         return view('users', compact('users', 'count'));
     }
 
@@ -88,6 +92,10 @@ class PluginController extends Controller
         }else{
             $groups = Group::orderBy('id', 'DESC')->paginate(10);
             $count = Group::count();
+        }
+        if (Auth::user()->groupe->all_perms == 0)
+        {
+            return back()->with('error', 'No permissions.');
         }
         return view('groups', compact('groups', 'count'));
     }

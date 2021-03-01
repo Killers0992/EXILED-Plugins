@@ -135,6 +135,7 @@ class PluginManagment extends Controller
         $uploadedFile->storeAs($plugin->id.'/download/'.$file->file_id, $filename.'.'.$fileex);
         $plugin->last_update = new DateTime();
         $plugin->latest_file_id = $file->file_id;
+        $plugin->latest_version = $file->version;
         $plugin->latest_exiled_version = $file->exiled_version;
         $plugin->save();
 
@@ -257,9 +258,11 @@ class PluginManagment extends Controller
         if ($plugin->latest_file_id == $oldid){
             if (is_null($fl)){
                 $plugin->latest_exiled_version = '2.1.29';
+                $plugin->latest_version = '1.0.0';
                 $plugin->latest_file_id = -1;
             }else{
                 $plugin->latest_exiled_version = $fl->exiled_version;
+                $plugin->latest_version = $fl->version;
                 $plugin->latest_file_id = $fl->file_id;
             }
         }
