@@ -160,7 +160,7 @@
             </div>
         </div>
     </div>
-    @if (is_null(Auth::user()) ? false : (Auth::user()->steamid == $plugin->owner_steamid && Auth::user()->groupe->uplaod_file == 1) || Auth::user()->groupe->all_perms == 1 || Auth::user()->groupe->upload_file_admin == 1)
+    @if (is_null(Auth::user()) ? false : (Auth::user()->steamid == $plugin->owner_steamid && Auth::user()->groupe->upload_file == 1) || Auth::user()->groupe->all_perms == 1 || Auth::user()->groupe->upload_file_admin == 1)
     <div class="row">
         <div class="col-12">
             <div class="card">
