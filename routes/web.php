@@ -10,6 +10,7 @@ Route::get('/error/403', function () {
 Route::get('/', 'PluginController@pluginList')->name('home');
 
 Route::get('plugins/json', 'PluginController@jsonplugins')->name('plugins.json');
+Route::get('users/json', 'PluginController@jsonusers')->name('users.json');
 
 #Plugins - Add new plugin
 Route::get('plugin/add', 'PluginController@addPlugin')->name('plugin.addindex')->middleware('auth');
@@ -27,6 +28,7 @@ Route::get('plugin/{id}/files', 'PluginController@viewPluginFiles')->name('plugi
 Route::get('plugin/{id}/download/{fileid}', 'PluginManagment@downloadFile')->name('plugin.download.file');
 Route::post('plugin/{id}/files/upload', 'PluginManagment@uploadFile')->name('plugin.upload.file')->middleware('auth');
 Route::post('plugin/{id}/files/delete', 'PluginManagment@deleteFile')->name('plugin.delete.file')->middleware('auth');
+Route::get('plugin/{id}/members', 'PluginController@pluginmembers')->name('plugin.view.members');
 
 #Auth
 Route::get('auth/steam', 'AuthController@redirectToSteam')->name('auth.steam');

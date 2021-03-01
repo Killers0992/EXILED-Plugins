@@ -9,6 +9,7 @@ use DateTime;
 use App\Plugin;
 use App\User;
 use App\Group;
+use App\PluginMember;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,6 +22,17 @@ class PluginController extends Controller
      */
     public function __construct()
     {
+    }
+
+    public function pluginmembers(Request $request, $id)
+    {
+        $plugin = Plugin::where('id', '=', $id)->first();
+        if (is_null($plugin)){
+            return back()->with('error', 'Plugin not found.');
+        }
+        $members = PluginMember::where('plugin_id', '=', $plugin->id)->paginate(5);
+        
+        return view('viewpluginmembers', compact('plugin', 'members'));
     }
 
     public function jsonplugins(Request $request)
@@ -39,15 +51,26 @@ class PluginController extends Controller
         return response()->json($arr, 200);
     }
 
+    public function jsonusers(Request $request)
+    {
+        $users = User::select('steamid','nickname','profile_url')->where('nickname', 'LIKE', '%'.$request->input('q').'%')->get();
+        $arr = array();
+        foreach($users as $user)
+        {
+            array_push($arr, [ 'id' => $user->steamid, 'name' => $user->nickname, 'image' => $user->profile_url ]);
+        }
+        return response()->json($arr, 200);
+    }
+
     public function users(Request $request)
     {
         $query = $request->input('query');
         if ($query != null)
         {
-            $users = User::where('nickname', 'LIKE', '%'.$query.'%')->paginate(10);
+            $users = User::where('nickname', 'LIKE', '%'.$query.'%')->orderBy('group', 'DESC')->paginate(10);
             $count = User::where('nickname', 'LIKE', '%'.$query.'%')->count();
         }else{
-            $users = User::paginate(10);
+            $users = User::orderBy('group', 'DESC')->paginate(10);
             $count = User::count();
         }
         return view('users', compact('users', 'count'));
@@ -58,10 +81,10 @@ class PluginController extends Controller
         $query = $request->input('query');
         if ($query != null)
         {
-            $groups = Group::where('group_name', 'LIKE', '%'.$query.'%')->paginate(10);
+            $groups = Group::where('group_name', 'LIKE', '%'.$query.'%')->orderBy('id', 'DESC')->paginate(10);
             $count = Group::where('group_name', 'LIKE', '%'.$query.'%')->count();
         }else{
-            $groups = Group::paginate(10);
+            $groups = Group::orderBy('id', 'DESC')->paginate(10);
             $count = Group::count();
         }
         return view('groups', compact('groups', 'count'));
@@ -111,7 +134,15 @@ class PluginController extends Controller
             return back()->with('error', 'No permissions.');
         }
 
-        $plugin = Plugin::where('id', '=', $id)->where('owner_steamid', '=', Auth::user()->steamid)->first();
+        if (Auth::user()->groupe->edit_plugin_admin == 1 || Auth::user()->groupe->allperms == 1)
+        {
+            $plugin = Plugin::where('id', '=', $id)->first();
+        }
+        else
+        {
+            $plugin = Plugin::where('id', '=', $id)->where('owner_steamid', '=', Auth::user()->steamid)->first();
+        }
+        
         if (is_null($plugin)){
             return redirect()->route('home');
         }
