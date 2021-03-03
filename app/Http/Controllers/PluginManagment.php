@@ -140,11 +140,63 @@ class PluginManagment extends Controller
         $plugin->latest_version = $file->version;
         $plugin->latest_exiled_version = $file->exiled_version;
         $plugin->save();
-        if ($request->input('sendwebhook')){
-            dd('bruh');
+        if ($request->input('sendwebhook') && $plugin->webhook_url != ''){
+            $downloadurl = route('plugin.download.file', ['id' => $plugin->id, 'fileid' => $file->file_id]);
+            $changelog = $file->changelog == '' ? 'No changelog.' : $file->changelog;
+            $this->sendWebhook($plugin->webhook_url, $file->exiled_version, $file->version, $changelog, $downloadurl);
         }
 
         return back()->with('success',' File uploaded!');
+    }
+
+    public function sendWebhook($webhookurl, $exversion, $version, $changelog, $urldownload)
+    {
+        $timestamp = date("c", strtotime("now"));
+        $json_data = json_encode([
+            "content" => "",
+            "tts" => false,
+            "embeds" => [
+                [
+                    "title" => "New update",
+                    "type" => "rich",
+                    "timestamp" => $timestamp,
+        
+                    "color" => hexdec( "3366ff" ),
+                    "fields" => [
+                        [
+                            "name" => "Exiled Version",
+                            "value" => $exversion,
+                            "inline" => false
+                        ],
+                        [
+                            "name" => "Version",
+                            "value" => $version,
+                            "inline" => false
+                        ],
+                        [
+                            "name" => "Changelog",
+                            "value" => $changelog,
+                            "inline" => false
+                        ],
+                        [
+                            "name" => "Download",
+                            "value" => "[Click here](".$urldownload.")",
+                            "inline" => false
+                        ]
+                    ]
+                ]
+            ]
+        
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+        $ch = curl_init( $webhookurl );
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+        curl_setopt( $ch, CURLOPT_POST, 1);
+        curl_setopt( $ch, CURLOPT_POSTFIELDS, $json_data);
+        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt( $ch, CURLOPT_HEADER, 0);
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
+        $response = curl_exec( $ch );
+        curl_close( $ch );
     }
 
     public function addMember(Request $request, $id)
