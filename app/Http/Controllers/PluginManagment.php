@@ -92,8 +92,7 @@ class PluginManagment extends Controller
             'type' => 'required|max:1',
             'changelog' => 'max:2000',
             'file' => 'required|max:25000',
-            'version' => 'required|max:50',
-            'sendwebhook' => 'required'
+            'version' => 'required|max:50'
         ],
         [
             'exiledversion.required'        => 'You must provide exiled version.',

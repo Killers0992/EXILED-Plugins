@@ -31,7 +31,6 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Group::class, 'group', 'id');
     }
-
     public $timestamps = false;
     protected $primaryKey = 'steamid';
 }
