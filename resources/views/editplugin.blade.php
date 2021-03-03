@@ -59,6 +59,10 @@
                                 <label for="pluginname">Source url</label>
                                 <input type="text" class="form-control" name="pluginsource" value="{{$plugin->source_url}}">
                             </div>
+                            <div class="form-group">
+                                <label for="webhookurl">Webhook url</label>
+                                <input type="text" class="form-control" name="webhookurl" value="{{$plugin->webhook_url}}">
+                            </div>
                           </div>
                           <!-- /.box-body -->
             

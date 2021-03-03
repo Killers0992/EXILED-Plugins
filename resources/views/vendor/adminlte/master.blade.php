@@ -76,13 +76,13 @@
         <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
         <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
-        <script src="//plugins.kingsplayground.fun/vendor/moment/moment.min.js"></script>
+        <script src="//plugins.exiled.host/vendor/moment/moment.min.js"></script>
 
         {{-- Configured Scripts --}}
         @include('adminlte::plugins', ['type' => 'js'])
 
         <!-- date-range-picker -->
-        <script src="//plugins.kingsplayground.fun/vendor/daterangepicker/daterangepicker.js"></script>
+        <script src="//plugins.exiled.host/vendor/daterangepicker/daterangepicker.js"></script>
         <script src="{{ asset('vendor/inputmask/inputmask.min.js') }}"></script>
         <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
     @else

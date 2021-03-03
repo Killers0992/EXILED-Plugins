@@ -201,7 +201,14 @@
                       </div>
                        </div>
                        <!-- /.box-body -->
-         
+                       @if($plugin->webhook_url != '')
+                       <div class="checkbox">
+                        <label>
+                          <input type="checkbox" name="sendwebhook" id="sendwebhook"> Send discord webhook?
+                        </label>
+                      </div>
+                      @endif
+
                        <div class="box-footer">
                          <button type="submit" class="btn btn-success">Upload</button>
                        </div>

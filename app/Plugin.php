@@ -27,6 +27,7 @@ class Plugin extends Model
         'creation_date',
         'downloads_count',
         'category',
+        'webhook_url',
         'owner_steamid'
     ];
 

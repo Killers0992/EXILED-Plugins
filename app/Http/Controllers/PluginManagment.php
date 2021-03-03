@@ -9,6 +9,7 @@ use App\PluginDependency;
 use DateTime;
 use App\PluginMember;
 use App\Plugin;
+use App\User;
 use App\PluginGroup;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -90,7 +91,8 @@ class PluginManagment extends Controller
             'type' => 'required|max:1',
             'changelog' => 'max:2000',
             'file' => 'required|max:25000',
-            'version' => 'required|max:50'
+            'version' => 'required|max:50',
+            'sendwebhook' => 'required'
         ],
         [
             'exiledversion.required'        => 'You must provide exiled version.',
@@ -138,6 +140,9 @@ class PluginManagment extends Controller
         $plugin->latest_version = $file->version;
         $plugin->latest_exiled_version = $file->exiled_version;
         $plugin->save();
+        if ($request->input('sendwebhook')){
+            dd('bruh');
+        }
 
         return back()->with('success',' File uploaded!');
     }
@@ -168,13 +173,14 @@ class PluginManagment extends Controller
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
+        dd($request->input('user'));
 
-        $user = PluginGroup::where('steamid', '=', $request->input('user'));
+        $user = User::where('steamid', '=', $request->input('user'))->first();
         if (is_null($user)){
             return back()->with('error', 'User not found!');
         }
 
-        $group = PluginGroup::where('id', '=', $request->input('group'));
+        $group = PluginGroup::where('id', '=', $request->input('group'))->first();
         if (is_null($group)){
             return back()->with('error', 'Group not found!');
         }
@@ -348,7 +354,8 @@ class PluginManagment extends Controller
             'pluginimage'                 => 'required|max:150',
             'pluginsmalldescription'      => 'required|max:250',
             'plugindescription'           => 'required|max:2000',
-            'category'                    => 'required'
+            'category'                    => 'required',
+            'webhookurl'                  => 'max:250'
         ],
         [
             'pluginname.required'        => 'You must provide plugin name.',
@@ -385,6 +392,7 @@ class PluginManagment extends Controller
         $plugin->description = $request->input('plugindescription');
         $plugin->small_description = $request->input('pluginsmalldescription');
         $plugin->category = $request->input('category');
+        $plugin->webhook_url = $request->input('webhookurl') ?? '';
         $plugin->last_update = new DateTime();
         $plugin->save();
 
