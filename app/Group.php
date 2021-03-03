@@ -22,7 +22,9 @@ class Group extends Model
         'edit_plugin',
         'edit_plugin_admin',
         'upload_file',
-        'upload_file_admin'
+        'upload_file_admin',
+        'view_users',
+        'view_groups'
     ];
 
     

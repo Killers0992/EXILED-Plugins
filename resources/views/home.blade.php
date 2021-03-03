@@ -16,16 +16,21 @@
             </div>
             <div class="card">
               <div class="card-body">
-
-                <form action="{{route('home')}}" method="GET">
+                <form action="{{ route('home') }}" method="GET">
                   <div class="input-group input-group-sm">
-                      <input type="text" name="query" class="form-control float-right" value="" placeholder="Search plugin by name.">
+                    <input type="text" name="query" class="form-control float-right" value="{{ request()->input('query') }}" placeholder="Search by name">
+
+                      <select class="form-control" name="filter" id="filter"> 
+                          <option value="-1">Filter By Category</option>
+                          @foreach($categories as $category)
+                          <option {{ $category->id == request()->input('filter') ? 'selected' : ''}} value="{{$category->id}}">{{$category->category_name}}</option>
+                          @endforeach
+                      </select>
                       <div class="input-group-append">
                           <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
                       </div>
                   </div>
                   </form>
-
               </div>
           </div>
             <div class="card">
@@ -63,7 +68,7 @@
                                         <p class="text-sm leading-snug">
                                           {{$plugin->small_description}}
                                         </p>
-                                        {!!$plugin->categorynice!!}
+                                        {!!$plugin->categoryobj->categorynice!!}
                                         @if($plugin->latest_file_id != -1)
                                         <form method="get" action="{{route('plugin.download.file', ['id' => $plugin->id, 'fileid' => $plugin->latest_file_id])}}">
                                           <button type="submit" class="btn btn-block btn-primary bg-purple btn-xs" style="width: 150px; float: right;">Download</button>

@@ -26,7 +26,7 @@
                             </form>
                             @endif
                     </div>
-                    {!!$plugin->categorynice!!}
+                    {!!$plugin->categoryobj->categorynice!!}
                 </div>
               </div>
               </span>

@@ -27,6 +27,16 @@ class CreateGroupsTable extends Migration
             $table->smallInteger('upload_file')->default(0);
             $table->smallInteger('upload_file_admin')->default(0);
         });
+        DB::table('groups')->insert(
+            array(
+                'id' => 0,
+                'group_name' => 'User',
+                'delete_plugin' => 1,
+                'create_plugin' => 1,
+                'edit_plugin' => 1,
+                'upload_file' => 1
+            )
+        );
     }
 
     /**

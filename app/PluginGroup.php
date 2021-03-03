@@ -18,7 +18,8 @@ class PluginGroup extends Model
         'all_perms',
         'delete_plugin',
         'edit_plugin',
-        'upload_file'
+        'upload_file',
+        'delete_file'
     ];
 
     

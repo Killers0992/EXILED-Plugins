@@ -22,6 +22,13 @@ class CreatePluginsGroupsTable extends Migration
             $table->smallInteger('edit_plugin')->default(0);
             $table->smallInteger('upload_file')->default(0);
         });
+        DB::table('plugins_groups')->insert(
+            array(
+                'id' => 5,
+                'group_name' => 'Owner',
+                'all_perms' => 1
+            )
+        );
     }
 
     /**

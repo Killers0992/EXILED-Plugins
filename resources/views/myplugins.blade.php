@@ -16,10 +16,16 @@
             </div>
             <div class="card">
               <div class="card-body">
-
-                <form action="{{route('plugin.list')}}" method="GET">
+                <form action="{{ route('plugin.list') }}" method="GET">
                   <div class="input-group input-group-sm">
-                      <input type="text" name="query" class="form-control float-right" value="" placeholder="Search plugin by name.">
+                    <input type="text" name="query" class="form-control float-right" value="{{ request()->input('query') }}" placeholder="Search by name">
+
+                      <select class="form-control" name="filter" id="filter"> 
+                          <option value="-1">Filter By Category</option>
+                          @foreach($categories as $category)
+                          <option {{ $category->id == request()->input('filter') ? 'selected' : ''}} value="{{$category->id}}">{{$category->category_name}}</option>
+                          @endforeach
+                      </select>
                       <div class="input-group-append">
                           <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
                       </div>
@@ -63,7 +69,7 @@
                                         <p class="text-sm leading-snug">
                                           {{$plugin->small_description}}
                                         </p>
-                                        {!!$plugin->categorynice!!}
+                                        {!!$plugin->categoryobj->categorynice!!}
                                         <form method="get" action="{{route('plugin.edit', ['id' => $plugin->id])}}">
                                             <button type="submit" class="btn btn-block btn-primary bg-purple btn-xs" style="width: 150px; float: right;">Edit</button>
                                         </form>
