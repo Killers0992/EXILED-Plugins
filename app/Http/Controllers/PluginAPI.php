@@ -23,6 +23,7 @@ class PluginAPI extends Controller
 
     public function plugins(Request $request)
     {
+        return response('bruh', 200);
         $plugins = Plugin::all();
         $arr = array();
         header('Content-Type: application/json');

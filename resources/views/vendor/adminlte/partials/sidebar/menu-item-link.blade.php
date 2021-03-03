@@ -1,4 +1,4 @@
-@if (in_array('none', $item['access_level']))
+@if (in_array((is_null(Auth::user()) ? 'none' : (Auth::user()->groupe->all_perms == 1 ? 'admin' : 'user')), $item['access_level']))
 <li @if(isset($item['id'])) id="{{ $item['id'] }}" @endif class="nav-item">
 
     <a class="nav-link {{ $item['class'] }} @if(isset($item['shift'])) {{ $item['shift'] }} @endif"
