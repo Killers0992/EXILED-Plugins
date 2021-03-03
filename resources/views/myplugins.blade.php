@@ -21,8 +21,8 @@
                     <input type="text" name="query" class="form-control float-right" value="{{ request()->input('query') }}" placeholder="Search by name">
 
                       <select class="form-control" name="filter" id="filter"> 
-                          <option value="-1">Filter By Category</option>
-                          @foreach($categories as $category)
+                        <option {{ request()->has('filter') ? '' : 'selected'}} value="-1">Filter By Category</option>
+                        @foreach($categories as $category)
                           <option {{ $category->id == request()->input('filter') ? 'selected' : ''}} value="{{$category->id}}">{{$category->category_name}}</option>
                           @endforeach
                       </select>
