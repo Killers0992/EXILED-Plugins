@@ -13,6 +13,7 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
         "invisnik/laravel-steam-auth": "^4.3",
+        "jeremykenedy/laravel-logger": "^3.7",
         "jeroennoten/laravel-adminlte": "^3.4",
         "laravel/framework": "^7.24",
         "laravel/tinker": "^2.0",

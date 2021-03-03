@@ -9,6 +9,7 @@ use App\PluginDependency;
 use DateTime;
 use App\PluginMember;
 use App\Plugin;
+use App\PluginDownloads;
 use App\User;
 use App\PluginGroup;
 use Illuminate\Support\Facades\Validator;
@@ -111,6 +112,11 @@ class PluginManagment extends Controller
         $uploadedFile = $request->file;
         $filename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
         $fileex = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_EXTENSION);
+
+        if (!in_array($fileex, array('tar.gz', 'rar', 'zip', '7z', 'dll', 'xml', 'exe', 'js', 'py', 'bin')))
+        {
+            return back()->with('error', 'File extension '.$fileex.' not allowed!');
+        }
 
         $file = new PluginFile();
         $file->plugin_id = $plugin->id;
@@ -250,11 +256,22 @@ class PluginManagment extends Controller
         if (is_null($file)){
             return back()->with('error', 'Cant find that file');
         }
+
+        $ip = $request->ip();
+        $pd = PluginDownloads::where('ip', '=', $ip)->where('plugin_id', '=', $plugin->id)->where('file_id', '=', $file->file_id)->first();
+        if (is_null($pd))
+        {
+            $pd = new PluginDownloads();
+            $pd->ip = $ip;
+            $pd->plugin_id = $plugin->id;
+            $pd->file_id = $file->file_id;
+            $pd->save();
+            $file->downloads_count++;
+            $file->save();
+            $plugin->downloads_count++;
+            $plugin->save();
+        }
         $fileName = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix(). $id . '/download/'.$fileid.'/'.$file->file_name.'.'.$file->file_extension;
-        $file->downloads_count++;
-        $file->save();
-        $plugin->downloads_count++;
-        $plugin->save();
         return response()->download($fileName);
     }
 
@@ -406,8 +423,7 @@ class PluginManagment extends Controller
             'pluginimage'                 => 'required|max:150',
             'pluginsmalldescription'      => 'required|max:250',
             'plugindescription'           => 'required|max:2000',
-            'category'                    => 'required',
-            'webhookurl'                  => 'max:250'
+            'category'                    => 'required'
         ],
         [
             'pluginname.required'        => 'You must provide plugin name.',

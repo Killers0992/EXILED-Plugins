@@ -269,6 +269,12 @@ return [
             'icon' => 'fas fa-fw fa-database',
             'access_level' => array('admin'),
         ],
+        [
+            'text' => 'Activity Logs',
+            'url'  => '/activity',
+            'icon' => 'fas fa-fw fa-scroll',
+            'access_level' => array('admin'),
+        ],
     ],
 
     /*
