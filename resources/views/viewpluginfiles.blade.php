@@ -44,7 +44,10 @@
                             <a href="{{ route('plugin.view', ['id' => $plugin->id])}}">Description</a>
                         </td>
                         <td>
-                            <a href="">Files</a>
+                            <a href="{{ route('plugin.view.files', ['id' => $plugin->id])}}">Files</a>
+                        </td>
+                        <td>
+                            <a href="{{ route('plugin.view.members', ['id' => $plugin->id])}}">Members</a>
                         </td>
                         @if(!empty($plugin->issues_url))
                         <td>
@@ -56,9 +59,6 @@
                             <a href="{{$plugin->wiki_url}}">Wiki</a>
                         </td>
                         @endif
-                        <td>
-                            <a href="{{ route('plugin.view.members', ['id' => $plugin->id])}}">Members</a>
-                        </td>
                         @if(!empty($plugin->source_url))
                         <td>
                             <a href="{{$plugin->source_url}}">Source</a>
