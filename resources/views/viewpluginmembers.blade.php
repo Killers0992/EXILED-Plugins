@@ -81,6 +81,9 @@
                             <tr>
                                 <th>Nickname</th>
                                 <td>Group</th>
+                                @if(is_null(Auth::user()) ? false : (Auth::user()->steamid == $plugin->owner_steamid))
+                                <th>Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -88,6 +91,18 @@
                                 <tr>
                                     <td>{{$member->user->nickname}}</td>
                                     <td>{{$member->groupe->group_name}}</td>
+                                    @if(is_null(Auth::user()) ? false : (Auth::user()->steamid == $plugin->owner_steamid) && $member->steamid != $plugin->owner_steamid)
+                                    )
+                                    <td class="text-left">
+                                        <form role="form" action="" method="post">
+                                            @csrf
+                                            <input hidden="true" name="fileid" value="">
+                                            <button type="submit">
+                                                <abbr title="Delete"><i class="text-danger fas fa-ban"></i></abbr>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>

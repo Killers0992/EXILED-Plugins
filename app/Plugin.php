@@ -50,10 +50,12 @@ class Plugin extends Model
     }
     
     protected $hidden = [
-        'owner_steamid'
+        'owner_steamid',
+        'webhook_url',
+        'category'
     ];
     
-    protected $with = ['user', 'files'];
+    protected $with = ['user', 'files', 'categoryobj'];
     public $timestamps = false;
     protected $primaryKey = 'id';
 }

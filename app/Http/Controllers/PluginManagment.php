@@ -233,6 +233,7 @@ class PluginManagment extends Controller
         dd($request->input('user'));
 
         $user = User::where('steamid', '=', $request->input('user'))->first();
+        dd($user);
         if (is_null($user)){
             return back()->with('error', 'User not found!');
         }

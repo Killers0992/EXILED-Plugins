@@ -254,6 +254,12 @@ return [
             'access_level' => array('user', 'admin'),
         ],
         [
+            'text' => 'API Key',
+            'url'  => '/apikey',
+            'icon' => 'fas fa-fw fa-database',
+            'access_level' => array('user', 'admin'),
+        ],
+        [
             'header' => 'Admin Stuff',
             'access_level' => array('admin'),
         ],

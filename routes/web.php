@@ -37,7 +37,11 @@ Route::get('auth/steam/handle', 'AuthController@handle')->name('auth.steam.handl
 Route::post('logout', 'AuthController@logout')->name('logout')->middleware('activity');
 
 #Api
+Route::get('api/plugins/{id}', 'PluginAPI@pluginsOnce')->name('api.plugins.once')->middleware('activity');
 Route::get('api/plugins', 'PluginAPI@plugins')->name('api.plugins')->middleware('activity');
+Route::get('apikey', 'PluginAPI@viewApiKey')->name('api.key')->middleware('auth')->middleware('activity');
+Route::post('apikey/create', 'PluginAPI@createApiKey')->name('api.create')->middleware('auth')->middleware('activity');
+Route::post('apikey/delete', 'PluginAPI@deleteApiKey')->name('api.delete')->middleware('auth')->middleware('activity');
 
 #Admin stuff
 Route::get('groups', 'PluginController@groups')->name('groups')->middleware('auth')->middleware('activity');
