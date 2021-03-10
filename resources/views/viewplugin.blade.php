@@ -20,11 +20,11 @@
                         <code><span class="text-xs text-gray-500">Created <abbr>{{$plugin->creation_date}}</abbr></span></code>
                         <code><span class="text-xs text-gray-500">Exiled Version: <abbr>{{$plugin->latest_exiled_version}}</abbr></span></code>
                           
-                          @if(is_null(Auth::user()) ? false : (Auth::user()->steamid == $plugin->owner_steamid && Auth::user()->groupe->edit_plugin == 1) || Auth::user()->groupe->all_perms == 1 || Auth::user()->groupe->edit_plugin_admin == 1)
-                            <form method="get" action="{{route('plugin.edit', ['id' => $plugin->id])}}">
-                                <button type="submit" class="btn btn-block btn-primary bg-purple btn-xs" style="width: 150px; float: right;">Edit</button>
-                            </form>
-                            @endif
+                        @if (Auth::user()->allowed('edit.plugin', $plugin) || Auth::user()->hasPermission('edit.plugin.admin'))
+                        <form method="get" action="{{route('plugin.edit', ['id' => $plugin->id])}}">
+                            <button type="submit" class="btn btn-block btn-primary bg-purple btn-xs" style="width: 150px; float: right;">Edit</button>
+                        </form>
+                        @endif
                     </div>
                     {!!$plugin->categoryobj->categorynice!!}
                 </div>

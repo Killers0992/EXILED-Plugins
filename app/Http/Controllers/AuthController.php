@@ -5,6 +5,7 @@ use Invisnik\LaravelSteamAuth\SteamAuth;
 use App\User;
 use Auth;
 use Illuminate\Http\Request;
+use jeremykenedy\LaravelRoles\Models\Role;
 
 class AuthController extends Controller
 {
@@ -81,7 +82,7 @@ class AuthController extends Controller
     protected function findOrNewUser($info)
     {
         $steamid = $info->steamID64;
-        $user = User::where('steamid', $steamid)->first();
+        $user = User::where('id', $steamid)->first();
         if (!is_null($user)) {
             $user->nickname = $info->personaname;
             $user->profile_url = $info->avatarfull;
@@ -90,14 +91,13 @@ class AuthController extends Controller
         }
 
         $user = new User();
-        $user->steamid = $steamid;
+        $user->id = $steamid;
         $user->nickname = $info->personaname;
         $user->profile_url = $info->avatarfull;
-        $user->group = 0;
         $user->save();
-        
-        $userd = User::where('steamid', $steamid)->first();
-        return $userd;
+        $role = Role::where('name', '=', 'User')->first(); 
+        $user->attachRole($role);
+        return $user;
     }
 
     public function getAvatarUrl($steamid){

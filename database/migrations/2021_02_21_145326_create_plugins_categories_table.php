@@ -19,13 +19,6 @@ class CreatePluginsCategoriesTable extends Migration
             $table->string('category_name', 50)->default('None');
             $table->string('category_color', 50)->default('');
         });
-        DB::table('plugins_categories')->insert(
-            array(
-                'id' => 0,
-                'category_name' => 'None',
-                'category_color' => 'gray'
-            )
-        );
     }
 
     /**

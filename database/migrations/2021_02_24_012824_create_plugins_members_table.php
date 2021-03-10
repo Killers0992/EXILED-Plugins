@@ -16,9 +16,13 @@ class CreatePluginsMembersTable extends Migration
         Schema::create('plugins_members', function (Blueprint $table) {
             $table->collation = 'utf8mb4_unicode_ci';
             $table->id();
-            $table->string('steamid', 18)->default('');
-            $table->bigInteger('plugin_id')->default(0);
-            $table->bigInteger('group')->default(0);
+            $table->unsignedBigInteger('steamid')->unsigned()->index();
+            $table->foreign('steamid')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('plugin_id')->unsigned()->index();
+            $table->foreign('plugin_id')->references('id')->on('plugins')->onDelete('cascade');
+            $table->unsignedBigInteger('group')->unsigned()->index();
+            $table->foreign('group')->references('id')->on('plugins_groups')->onDelete('cascade');
+
         });
     }
 

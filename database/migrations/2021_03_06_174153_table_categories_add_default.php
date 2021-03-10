@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class TablePluginsGroupsAddIndexDeleteFile extends Migration
+class TableCategoriesAddDefault extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,13 @@ class TablePluginsGroupsAddIndexDeleteFile extends Migration
      */
     public function up()
     {
-        Schema::table('plugins_groups', function (Blueprint $table) {
-            $table->smallInteger('delete_file')->default(0)->after('upload_file');
-        });
+        DB::table('plugins_categories')->insert(
+            array(
+                'id' => 0,
+                'category_name' => 'None',
+                'category_color' => 'gray'
+            )
+        );
     }
 
     /**

@@ -16,7 +16,8 @@ class CreatePluginsFilesTable extends Migration
         Schema::create('plugins_files', function (Blueprint $table) {
             $table->collation = 'utf8mb4_unicode_ci';
             $table->id('file_id');
-            $table->bigInteger('plugin_id')->default(0);
+            $table->unsignedBigInteger('plugin_id')->unsigned()->index();
+            $table->foreign('plugin_id')->references('id')->on('plugins')->onDelete('cascade');
             $table->smallInteger('type')->default(0);
             $table->string('file_name', 50)->default('Unknown name');
             $table->string('file_extension', 50)->default('dll');

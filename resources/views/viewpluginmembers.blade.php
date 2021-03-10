@@ -20,11 +20,11 @@
                         <code><span class="text-xs text-gray-500">Created <abbr>{{$plugin->creation_date}}</abbr></span></code>
                         <code><span class="text-xs text-gray-500">Exiled Version: <abbr>{{$plugin->latest_exiled_version}}</abbr></span></code>
                           
-                        @if(is_null(Auth::user()) ? false : (Auth::user()->steamid == $plugin->owner_steamid && Auth::user()->groupe->edit_plugin == 1) || Auth::user()->groupe->all_perms == 1 || Auth::user()->groupe->edit_plugin_admin == 1)
+                        @if (Auth::user()->allowed('edit.plugin', $plugin) || Auth::user()->hasPermission('edit.plugin.admin'))
                         <form method="get" action="{{route('plugin.edit', ['id' => $plugin->id])}}">
-                              <button type="submit" class="btn btn-block btn-primary bg-purple btn-xs" style="width: 150px; float: right;">Edit</button>
-                          </form>
-                          @endif
+                            <button type="submit" class="btn btn-block btn-primary bg-purple btn-xs" style="width: 150px; float: right;">Edit</button>
+                        </form>
+                        @endif
                     </div>
                     {!!$plugin->categoryobj->categorynice!!}
 
@@ -81,7 +81,7 @@
                             <tr>
                                 <th>Nickname</th>
                                 <td>Group</th>
-                                @if(is_null(Auth::user()) ? false : (Auth::user()->steamid == $plugin->owner_steamid))
+                                @if(is_null(Auth::user()) ? false : (Auth::user()->id == $plugin->user_id))
                                 <th>Action</th>
                                 @endif
                             </tr>
@@ -91,8 +91,7 @@
                                 <tr>
                                     <td>{{$member->user->nickname}}</td>
                                     <td>{{$member->groupe->group_name}}</td>
-                                    @if(is_null(Auth::user()) ? false : (Auth::user()->steamid == $plugin->owner_steamid) && $member->steamid != $plugin->owner_steamid)
-                                    )
+                                    @if(is_null(Auth::user()) ? false : (Auth::user()->id == $plugin->user_id) && $member->steamid != $plugin->user_id)
                                     <td class="text-left">
                                         <form role="form" action="" method="post">
                                             @csrf
@@ -116,7 +115,7 @@
             </div>
         </div>
     </div>
-    @if (is_null(Auth::user()) ? false : Auth::user()->steamid == $plugin->owner_steamid)
+    @if (Auth::user()->allowed('add.member', $plugin) || Auth::user()->hasPermission('add.member.admin'))
     <div class="row">
         <div class="col-12">
             <div class="card">

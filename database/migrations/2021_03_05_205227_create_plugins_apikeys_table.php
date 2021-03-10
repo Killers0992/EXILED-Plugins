@@ -14,9 +14,9 @@ class CreatePluginsApikeysTable extends Migration
     public function up()
     {
         Schema::create('plugins_apikeys', function (Blueprint $table) {
-            $table->string('owner', 255);
+            $table->id('owner')->index();
+            $table->foreign('owner')->references('id')->on('users')->onDelete('cascade');
             $table->string('api_key')->default('');
-            $table->primary('owner');
         });
     }
 

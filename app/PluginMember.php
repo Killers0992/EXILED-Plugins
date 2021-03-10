@@ -20,7 +20,7 @@ class PluginMember extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'steamid', 'steamid');
+        return $this->belongsTo(User::class, 'steamid', 'id');
     }
 
     public function groupe()

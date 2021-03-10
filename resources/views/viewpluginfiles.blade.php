@@ -20,11 +20,11 @@
                         <code><span class="text-xs text-gray-500">Created <abbr>{{$plugin->creation_date}}</abbr></span></code>
                         <code><span class="text-xs text-gray-500">Exiled Version: <abbr>{{$plugin->latest_exiled_version}}</abbr></span></code>
                           
-                        @if(is_null(Auth::user()) ? false : (Auth::user()->steamid == $plugin->owner_steamid && Auth::user()->groupe->edit_plugin == 1) || Auth::user()->groupe->all_perms == 1 || Auth::user()->groupe->edit_plugin_admin == 1)
+                        @if (Auth::user()->allowed('edit.plugin', $plugin) || Auth::user()->hasPermission('edit.plugin.admin'))
                         <form method="get" action="{{route('plugin.edit', ['id' => $plugin->id])}}">
-                              <button type="submit" class="btn btn-block btn-primary bg-purple btn-xs" style="width: 150px; float: right;">Edit</button>
-                          </form>
-                          @endif
+                            <button type="submit" class="btn btn-block btn-primary bg-purple btn-xs" style="width: 150px; float: right;">Edit</button>
+                        </form>
+                        @endif
                     </div>
                     {!!$plugin->categoryobj->categorynice!!}
 
@@ -99,7 +99,7 @@
                                     <td>{{$file->downloads_count}}</td>
                                     <td class="text-left">
 
-                                        @if(is_null(Auth::user()) ? false : (Auth::user()->steamid == $plugin->owner_steamid && Auth::user()->groupe->delete_plugin == 1) || Auth::user()->groupe->all_perms == 1 || Auth::user()->deelte_plugin_admin == 1)
+                                        @if (Auth::user()->allowed('delete.file', $plugin) || Auth::user()->hasPermission('delete.file.admin'))
                                         <form role="form" action="{{ route('plugin.delete.file', ['id' => $plugin->id]) }}" method="post">
                                             @csrf
                                             <input hidden="true" name="fileid" value="{{$file->file_id}}">
@@ -160,7 +160,7 @@
             </div>
         </div>
     </div>
-    @if (is_null(Auth::user()) ? false : (Auth::user()->steamid == $plugin->owner_steamid && Auth::user()->groupe->upload_file == 1) || Auth::user()->groupe->all_perms == 1 || Auth::user()->groupe->upload_file_admin == 1)
+    @if (Auth::user()->allowed('upload.file', $plugin) || Auth::user()->hasPermission('upload.file.admin'))
     <div class="row">
         <div class="col-12">
             <div class="card">

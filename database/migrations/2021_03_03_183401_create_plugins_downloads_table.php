@@ -15,7 +15,8 @@ class CreatePluginsDownloadsTable extends Migration
     {
         Schema::create('plugins_downloads', function (Blueprint $table) {
             $table->string('ip', 255);
-            $table->bigInteger('plugin_id')->default(-1);
+            $table->unsignedBigInteger('plugin_id')->unsigned()->index();
+            $table->foreign('plugin_id')->references('id')->on('plugins')->onDelete('cascade');
             $table->bigInteger('file_id')->default(-1);
         });
     }

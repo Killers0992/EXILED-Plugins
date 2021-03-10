@@ -6,10 +6,14 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use jeremykenedy\LaravelRoles\Traits\HasRoleAndPermission;
+use App\Traits\HasPluginPermission;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use HasRoleAndPermission;
+    use HasPluginPermission;
     
     public function __construct()
     {
@@ -18,20 +22,15 @@ class User extends Authenticatable
     }
 
     protected $fillable = [
-        'steamid', 'nickname', 'group', 'profile_url'
+        'id', 'nickname', 'profile_url'
     ];
-
 
     protected $hidden = [
         'remember_token',
         'profile_url'
     ];    
     
-    public function groupe()
-    {
-        return $this->belongsTo(Group::class, 'group', 'id');
-    }
     public $timestamps = false;
-    protected $primaryKey = 'steamid';
+    protected $primaryKey = 'id';
 }
  

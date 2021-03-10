@@ -28,7 +28,7 @@ class Plugin extends Model
         'downloads_count',
         'category',
         'webhook_url',
-        'owner_steamid'
+        'user_id'
     ];
 
     use HasTrixRichText;
@@ -41,7 +41,7 @@ class Plugin extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'owner_steamid', 'steamid');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function files()
@@ -50,7 +50,7 @@ class Plugin extends Model
     }
     
     protected $hidden = [
-        'owner_steamid',
+        'user_id',
         'webhook_url',
         'category'
     ];

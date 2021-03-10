@@ -16,8 +16,8 @@ class CreatePluginsTable extends Migration
         Schema::create('plugins', function (Blueprint $table) {
             $table->collation = 'utf8mb4_unicode_ci';
             $table->id();
-            $table->string('image_url', 150)->default('https://github.com/galaxy119/EXILED/raw/master/assets/Exiled_Icon.jpg');
             $table->string('name', 50)->default('Example Plugin');
+            $table->string('image_url', 150)->default('https://github.com/galaxy119/EXILED/raw/master/assets/Exiled_Icon.jpg');
             $table->string('small_description', 250)->default('Plugin small description');
             $table->string('description', 2000)->default('Plugin description');
             $table->string('wiki_url', 250)->default('');
@@ -29,8 +29,10 @@ class CreatePluginsTable extends Migration
             $table->dateTime('last_update')->nullable();
             $table->dateTime('creation_date')->nullable();
             $table->bigInteger('downloads_count')->default(0);
-            $table->smallInteger('category')->default(0);
-            $table->string('owner_steamid', 18)->default('');
+            $table->unsignedBigInteger('category')->unsigned()->default(1)->index();
+            $table->foreign('category')->references('id')->on('plugins_categories')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id')->unsigned()->index();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

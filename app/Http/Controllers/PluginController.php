@@ -70,35 +70,14 @@ class PluginController extends Controller
         $query = $request->input('query');
         if ($query != null)
         {
-            $users = User::where('nickname', 'LIKE', '%'.$query.'%')->orderBy('group', 'DESC')->paginate(10);
+            $users = User::where('nickname', 'LIKE', '%'.$query.'%')->paginate(10);
             $count = User::where('nickname', 'LIKE', '%'.$query.'%')->count();
         }else{
-            $users = User::orderBy('group', 'DESC')->paginate(10);
+            $users = User::paginate(10);
             $count = User::count();
         }
-        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->view_users == 0)
-        {
-            return back()->with('error', 'No permissions.');
-        }
-        return view('users', compact('users', 'count'));
-    }
 
-    public function groups(Request $request)
-    {
-        $query = $request->input('query');
-        if ($query != null)
-        {
-            $groups = Group::where('group_name', 'LIKE', '%'.$query.'%')->orderBy('id', 'DESC')->paginate(10);
-            $count = Group::where('group_name', 'LIKE', '%'.$query.'%')->count();
-        }else{
-            $groups = Group::orderBy('id', 'DESC')->paginate(10);
-            $count = Group::count();
-        }
-        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->view_groups == 0)
-        {
-            return back()->with('error', 'No permissions.');
-        }
-        return view('groups', compact('groups', 'count'));
+        return view('users', compact('users', 'count'));
     }
 
     public function pluginList(Request $request)
@@ -141,24 +120,24 @@ class PluginController extends Controller
         { 
             if($search != null)
             {
-                $plugins = Plugin::where('owner_steamid', '=', Auth::user()->steamid)->where('category', '=', $filter)->where('name', 'LIKE', '%'.$search.'%')->orderBy('downloads_count', 'DESC')->paginate(25);
-                $count = Plugin::where('owner_steamid', '=', Auth::user()->steamid)->where('category', '=', $filter)->where('name', 'LIKE', '%'.$search.'%')->orderBy('downloads_count', 'DESC')->count();
+                $plugins = Plugin::where('user_id', '=', Auth::user()->id)->where('category', '=', $filter)->where('name', 'LIKE', '%'.$search.'%')->orderBy('downloads_count', 'DESC')->paginate(25);
+                $count = Plugin::where('user_id', '=', Auth::user()->id)->where('category', '=', $filter)->where('name', 'LIKE', '%'.$search.'%')->orderBy('downloads_count', 'DESC')->count();
             } 
             else
             {
-                $plugins = Plugin::where('owner_steamid', '=', Auth::user()->steamid)->where('category', '=', $filter)->orderBy('downloads_count', 'DESC')->paginate(25);
-                $count = Plugin::where('owner_steamid', '=', Auth::user()->steamid)->where('category', '=', $filter)->orderBy('downloads_count', 'DESC')->count();
+                $plugins = Plugin::where('user_id', '=', Auth::user()->id)->where('category', '=', $filter)->orderBy('downloads_count', 'DESC')->paginate(25);
+                $count = Plugin::where('user_id,' ,'=', Auth::user()->id)->where('category', '=', $filter)->orderBy('downloads_count', 'DESC')->count();
             }
         } 
         elseif ($search != null)
         {
-            $plugins = Plugin::where('owner_steamid', '=', Auth::user()->steamid)->where('name', 'LIKE', '%'.$search.'%')->orderBy('downloads_count', 'DESC')->paginate(25);  
-            $count = Plugin::where('owner_steamid', '=', Auth::user()->steamid)->where('name', 'LIKE', '%'.$search.'%')->orderBy('downloads_count', 'DESC')->count();  
+            $plugins = Plugin::where('user_id', '=', Auth::user()->id)->where('name', 'LIKE', '%'.$search.'%')->orderBy('downloads_count', 'DESC')->paginate(25);  
+            $count = Plugin::where('user_id', '=', Auth::user()->id)->where('name', 'LIKE', '%'.$search.'%')->orderBy('downloads_count', 'DESC')->count();  
         } 
         else 
         {
-            $plugins = Plugin::where('owner_steamid', '=', Auth::user()->steamid)->where('name', '!=', '')->orderBy('downloads_count', 'DESC')->paginate(25);
-            $count = Plugin::where('owner_steamid', '=', Auth::user()->steamid)->where('name', '!=', '')->orderBy('downloads_count', 'DESC')->count();
+            $plugins = Plugin::where('user_id', '=', Auth::user()->id)->where('name', '!=', '')->orderBy('downloads_count', 'DESC')->paginate(25);
+            $count = Plugin::where('user_id', '=', Auth::user()->id)->where('name', '!=', '')->orderBy('downloads_count', 'DESC')->count();
         }
 
         $categories = PluginCategory::all();
@@ -167,31 +146,19 @@ class PluginController extends Controller
 
     public function addPlugin(Request $request)
     {
-        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->create_plugin == 0)
-        {
-            return back()->with('error', 'No permissions.');
-        }
         return view('addplugin');
     }
 
     public function editPlugin(Request $request, $id)
     {
-        if (Auth::user()->groupe->all_perms == 0 && Auth::user()->groupe->edit_plugin == 0 && Auth::user()->groupe->edit_plugin_admin == 0)
-        {
-            return back()->with('error', 'No permissions.');
-        }
-
-        if (Auth::user()->groupe->edit_plugin_admin == 1 || Auth::user()->groupe->all_perms == 1)
-        {
-            $plugin = Plugin::where('id', '=', $id)->first();
-        }
-        else
-        {
-            $plugin = Plugin::where('id', '=', $id)->where('owner_steamid', '=', Auth::user()->steamid)->first();
-        }
+        $plugin = Plugin::where('id', '=', $id)->first();
         
         if (is_null($plugin)){
-            return redirect()->route('home');
+            return back()->with('error', 'Plugin not found.');
+        }
+
+        if (!Auth::user()->allowedPlugin('edit.plugin', $plugin)) {
+            return back()->with('error', 'No permission.');
         }
 
         $categories = PluginCategory::all();

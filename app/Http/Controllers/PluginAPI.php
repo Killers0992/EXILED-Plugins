@@ -24,20 +24,20 @@ class PluginAPI extends Controller
 
     public function viewApiKey(Request $request)
     {
-        $apiKey = APIKey::where('owner', '=', Auth::user()->steamid)->first();
+        $apiKey = APIKey::where('owner', '=', Auth::user()->id)->first();
         return view('apikey', compact('apiKey'));
     }
 
     public function createApiKey(Request $request)
     {
-        $apiKey = APIKey::where('owner', '=', Auth::user()->steamid)->first();
+        $apiKey = APIKey::where('owner', '=', Auth::user()->id)->first();
         if (!is_null($apiKey)){
             $apiKey->api_key = Str::random(32);
             $apiKey->save();
         }
         else{
             $apiKey = new APIKey();
-            $apiKey->owner = Auth::user()->steamid;
+            $apiKey->owner = Auth::user()->id;
             $apiKey->api_key = Str::random(32);
             $apiKey->save();
         }
@@ -46,7 +46,7 @@ class PluginAPI extends Controller
 
     public function deleteApiKey(Request $request)
     {
-        $apiKey = APIKey::where('owner', '=', Auth::user()->steamid)->first();
+        $apiKey = APIKey::where('owner', '=', Auth::user()->id)->first();
         if (!is_null($apiKey)){
             $apiKey->delete();
         }

@@ -6,46 +6,70 @@ Route::get('/error/403', function () {
     return view('403');
 })->name('accessdenied');
 
-#Plugins
-Route::get('/', 'PluginController@pluginList')->name('home')->middleware('activity');
+#Log activity group
+Route::group(['middleware' => 'activity'], function (){
+    #Plugins
+    Route::get('/', 'PluginController@pluginList')->name('home');
+    
+    #Auth group
+    Route::group(['middleware' => 'auth'], function (){
+        #User/Plugin selector
+        Route::get('plugins/json', 'PluginController@jsonplugins')->name('plugins.json');
+        Route::get('users/json', 'PluginController@jsonusers')->name('users.json');
+        
+        #Plugins - Add new plugin
+        Route::group(['middleware' => ['permission:create.plugin']], function(){
+            Route::get('plugin/add', 'PluginController@addPlugin')->name('plugin.addindex');
+            Route::post('plugin/create', 'PluginManagment@createPlugin')->name('plugin.create');
+        });
 
-Route::get('plugins/json', 'PluginController@jsonplugins')->name('plugins.json')->middleware('activity');
-Route::get('users/json', 'PluginController@jsonusers')->name('users.json')->middleware('activity');
+        #Plugins - Manage
+        Route::get('myplugins', 'PluginController@myPluginList')->name('plugin.list')->middleware('permission:view.ownplugins');
+        Route::post('plugin/delete', 'PluginManagment@deletePlugin')->name('plugin.delete');
+        
+        #Plugins - Edit
+        Route::get('plugin/{id}/edit', 'PluginController@editPlugin')->name('plugin.edit');
+        Route::post('plugin/editchanges', 'PluginManagment@editChangesPlugin')->name('plugin.editchanges');
+       
+        #Plugins - Files
+        Route::post('plugin/{id}/files/upload', 'PluginManagment@uploadFile')->name('plugin.upload.file');
+        Route::post('plugin/{id}/files/delete', 'PluginManagment@deleteFile')->name('plugin.delete.file');
+        
+        #Plugins - Members
+        Route::post('plugin/{id}/members/add', 'PluginManagment@addMember')->name('plugin.members.add')->middleware('role:admin');
 
-#Plugins - Add new plugin
-Route::get('plugin/add', 'PluginController@addPlugin')->name('plugin.addindex')->middleware('auth')->middleware('activity');
-Route::post('plugin/create', 'PluginManagment@createPlugin')->name('plugin.create')->middleware('auth')->middleware('activity');
+        #Auth
+        Route::post('logout', 'AuthController@logout')->name('logout');
 
-#Plugins - Manage
-Route::get('myplugins', 'PluginController@myPluginList')->name('plugin.list')->middleware('auth')->middleware('activity');
-Route::post('plugin/delete', 'PluginManagment@deletePlugin')->name('plugin.delete')->middleware('auth')->middleware('activity');
-Route::post('plugin/editchanges', 'PluginManagment@editChangesPlugin')->name('plugin.editchanges')->middleware('auth')->middleware('activity');
+        #ApiKey
+        Route::group(['middleware' => ['permission:view.api']], function(){
+            Route::get('apikey', 'PluginAPI@viewApiKey')->name('api.key');
+            Route::post('apikey/create', 'PluginAPI@createApiKey')->name('api.create')->middleware('permission:create.apikey');
+            Route::post('apikey/delete', 'PluginAPI@deleteApiKey')->name('api.delete')->middleware('permission:delete.apikey');
+        });
 
-#Plugins - Main page
-Route::get('plugin/{id}', 'PluginController@viewPlugin')->name('plugin.view')->middleware('activity');
-Route::get('plugin/{id}/edit', 'PluginController@editPlugin')->name('plugin.edit')->middleware('auth')->middleware('activity');
-Route::get('plugin/{id}/files', 'PluginController@viewPluginFiles')->name('plugin.view.files')->middleware('activity');
-Route::get('plugin/{id}/download/{fileid}', 'PluginManagment@downloadFile')->name('plugin.download.file')->middleware('activity');
-Route::post('plugin/{id}/files/upload', 'PluginManagment@uploadFile')->name('plugin.upload.file')->middleware('auth')->middleware('activity');
-Route::post('plugin/{id}/files/delete', 'PluginManagment@deleteFile')->name('plugin.delete.file')->middleware('auth')->middleware('activity');
-Route::get('plugin/{id}/members', 'PluginController@pluginmembers')->name('plugin.view.members')->middleware('activity');
-Route::post('plugin/{id}/members/add', 'PluginManagment@addMember')->name('plugin.members.add')->middleware('auth')->middleware('activity');
+        
+        #Admin stuff
+        Route::get('users', 'PluginController@users')->name('users')->middleware('permission:view.users');
+    });
 
-#Auth
-Route::get('auth/steam', 'AuthController@redirectToSteam')->name('auth.steam')->middleware('activity');
-Route::get('auth/steam/handle', 'AuthController@handle')->name('auth.steam.handle')->middleware('activity');
-Route::post('logout', 'AuthController@logout')->name('logout')->middleware('activity');
+    #Plugins - Main page
+    Route::get('plugin/{id}', 'PluginController@viewPlugin')->name('plugin.view');
+    Route::get('plugin/{id}/files', 'PluginController@viewPluginFiles')->name('plugin.view.files');
+    Route::get('plugin/{id}/download/{fileid}', 'PluginManagment@downloadFile')->name('plugin.download.file');
+    Route::get('plugin/{id}/members', 'PluginController@pluginmembers')->name('plugin.view.members');
 
-#Api
-Route::get('api/plugins/{id}', 'PluginAPI@pluginsOnce')->name('api.plugins.once')->middleware('activity');
-Route::get('api/plugins', 'PluginAPI@plugins')->name('api.plugins')->middleware('activity');
-Route::get('apikey', 'PluginAPI@viewApiKey')->name('api.key')->middleware('auth')->middleware('activity');
-Route::post('apikey/create', 'PluginAPI@createApiKey')->name('api.create')->middleware('auth')->middleware('activity');
-Route::post('apikey/delete', 'PluginAPI@deleteApiKey')->name('api.delete')->middleware('auth')->middleware('activity');
 
-#Admin stuff
-Route::get('groups', 'PluginController@groups')->name('groups')->middleware('auth')->middleware('activity');
-Route::get('users', 'PluginController@users')->name('users')->middleware('auth')->middleware('activity');
+
+    #Auth
+    Route::get('auth/steam', 'AuthController@redirectToSteam')->name('auth.steam');
+    Route::get('auth/steam/handle', 'AuthController@handle')->name('auth.steam.handle');
+
+    #Api
+    Route::get('api/plugins/{id}', 'PluginAPI@pluginsOnce')->name('api.plugins.once')->middleware('activity');
+    Route::get('api/plugins', 'PluginAPI@plugins')->name('api.plugins')->middleware('activity');
+});
+
 
 //Logging Stuff
 Route::group(['prefix' => 'activity', 'namespace' => '\jeremykenedy\LaravelLogger\App\Http\Controllers', 'middleware' => ['auth', 'activity']], function () {

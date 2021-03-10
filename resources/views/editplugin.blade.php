@@ -10,6 +10,7 @@
 @section('content')
     <div class="row">
         <div class="col-12">
+            @if (Auth::user()->allowed('edit.plugin', $plugin) || Auth::user()->hasPermission('edit.plugin.admin'))
             <div class="card">
                 <div class="card-body">
                     <div class="box box-primary">
@@ -84,6 +85,8 @@
                     </div>
                 </div>
             </div>
+            @endif
+            @if (Auth::user()->allowed('delete.plugin', $plugin) || Auth::user()->hasPermission('delete.plugin.admin'))
             <div class="card">
                 <div class="card-body">
                     <div class="box box-primary">
@@ -116,6 +119,7 @@
                       </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 @stop

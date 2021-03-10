@@ -36,14 +36,12 @@
                             <thead>
                                 <tr>
                                     <th>Nickname</th>
-                                    <td>Group</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($users as $user)
                                     <tr>
                                         <td>{{$user->nickname}}</td>
-                                        <td>{{$user->groupe->group_name}}</td>
 
                                         <td class="text-left">
 
