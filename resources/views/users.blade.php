@@ -42,7 +42,6 @@
                                 @foreach ($users as $user)
                                     <tr>
                                         <td>{{$user->nickname}}</td>
-
                                         <td class="text-left">
 
                                         </td>

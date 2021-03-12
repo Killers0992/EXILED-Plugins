@@ -419,7 +419,7 @@ class PluginManagment extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $plugin = Plugin::where('id', '=', $id)->first();
+        $plugin = Plugin::where('id', '=', $request->input('pluginid'))->first();
 
         if (is_null($plugin)){
             return back()->with('error', 'Plugin not found!');
