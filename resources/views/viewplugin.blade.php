@@ -20,7 +20,7 @@
                         <code><span class="text-xs text-gray-500">Created <abbr>{{$plugin->creation_date}}</abbr></span></code>
                         <code><span class="text-xs text-gray-500">Exiled Version: <abbr>{{$plugin->latest_exiled_version}}</abbr></span></code>
                           
-                        @if (Auth::user()->allowed('edit.plugin', $plugin) || Auth::user()->hasPermission('edit.plugin.admin'))
+                        @if (Auth::user()->allowedPlugin('edit.plugin', $plugin) || Auth::user()->hasPermission('edit.plugin.admin'))
                         <form method="get" action="{{route('plugin.edit', ['id' => $plugin->id])}}">
                             <button type="submit" class="btn btn-block btn-primary bg-purple btn-xs" style="width: 150px; float: right;">Edit</button>
                         </form>
