@@ -157,7 +157,7 @@ class PluginController extends Controller
             return back()->with('error', 'Plugin not found.');
         }
 
-        if (!Auth::user()->allowedPlugin('edit.plugin', $plugin)) {
+        if (!Auth::user()->allowedPlugin('edit.plugin', $plugin) && !Auth::user()->hasPermission('edit.plugin.admin')) {
             return back()->with('error', 'No permission.');
         }
 
