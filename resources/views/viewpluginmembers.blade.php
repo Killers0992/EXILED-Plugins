@@ -81,7 +81,7 @@
                             <tr>
                                 <th>Nickname</th>
                                 <td>Group</th>
-                                @if(is_null(Auth::user()) ? false : (Auth::user()->id == $plugin->user_id))
+                                @if(is_null(Auth::user()) ? false : (is_null(Auth::user()) ? false : (Auth::user()->id == $plugin->user_id)))
                                 <th>Action</th>
                                 @endif
                             </tr>
@@ -115,7 +115,7 @@
             </div>
         </div>
     </div>
-    @if (Auth::user()->allowedPlugin('add.member', $plugin) || Auth::user()->hasPermission('add.member.admin'))
+    @if (is_null(Auth::user()) ? false : (Auth::user()->allowedPlugin('add.member', $plugin) || Auth::user()->hasPermission('add.member.admin')))
     <div class="row">
         <div class="col-12">
             <div class="card">
