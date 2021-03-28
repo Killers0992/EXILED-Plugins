@@ -11,6 +11,9 @@ Route::group(['middleware' => 'activity'], function (){
     #Plugins
     Route::get('/', 'PluginController@pluginList')->name('home');
     
+    #Profile
+    Route::get('profile/{userid}', 'PluginController@profile')->name('profile');
+
     #Auth group
     Route::group(['middleware' => 'auth'], function (){
         #User/Plugin selector

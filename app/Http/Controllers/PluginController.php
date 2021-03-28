@@ -149,6 +149,16 @@ class PluginController extends Controller
         return view('addplugin');
     }
 
+    public function profile(Request $request, $userid)
+    {
+        $user = User::where('id', '=', $userid)->first();
+        if (is_null($user)){
+            return back()->with('error', 'Player not found.');
+        }
+        $plcount = Plugin::where('user_id', '=', $userid)->count();
+        return view('profile', compact('user', 'plcount'));
+    }
+
     public function editPlugin(Request $request, $id)
     {
         $plugin = Plugin::where('id', '=', $id)->first();
